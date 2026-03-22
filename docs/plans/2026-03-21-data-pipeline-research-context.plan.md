@@ -131,9 +131,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 11: Research — Data Catalog & Lineage
 
-- [ ] Run `/wos:research`: "How should data catalog and lineage be implemented in a modern data stack, and what tooling options exist? Cover: catalog tool comparison (DataHub, OpenMetadata, Unity Catalog, Snowflake catalog, Atlan) — capabilities, deployment model, integration effort; OpenLineage standard and its role in lineage interoperability; column-level vs. table-level lineage — capabilities and practical limitations; automated lineage extraction from dbt artifacts, Spark, and SQL parsing; catalog integration with CI/CD and dbt docs; metadata quality and staleness management."
-- [ ] Verify: `ls docs/research/ | grep catalog\|lineage` returns a file
-- [ ] Commit: `chore: add data catalog & lineage research`
+- [x] Run `/wos:research`: "How should data catalog and lineage be implemented in a modern data stack, and what tooling options exist? Cover: catalog tool comparison (DataHub, OpenMetadata, Unity Catalog, Snowflake catalog, Atlan) — capabilities, deployment model, integration effort; OpenLineage standard and its role in lineage interoperability; column-level vs. table-level lineage — capabilities and practical limitations; automated lineage extraction from dbt artifacts, Spark, and SQL parsing; catalog integration with CI/CD and dbt docs; metadata quality and staleness management." <!-- sha:964fa90 -->
+- [x] Verify: `ls docs/research/ | grep catalog\|lineage` returns a file <!-- sha:964fa90 -->
+- [x] Commit: `chore: add data catalog & lineage research` <!-- sha:964fa90 -->
 
 ### Task 12: Research — Privacy Engineering
 
