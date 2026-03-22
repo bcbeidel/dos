@@ -185,9 +185,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 20: Research — Data Contracts
 
-- [ ] Run `/wos:research`: "How should data contracts be designed, enforced, and evolved between data producers and consumers? Cover: contract structure and standards (Open Data Contract Standard/ODCS, dbt contracts) and their differences; schema contracts (column names, types, nullability, keys), freshness/SLA contracts, and quality contracts; contract versioning strategies (backward vs. forward compatibility); producer/consumer negotiation workflows; enforcement patterns (CI-time breaking change detection, runtime validation); schema registry tooling (Confluent Schema Registry, AWS Glue Schema Registry); contract-driven development workflow."
-- [ ] Verify: `ls docs/research/ | grep data-contracts` returns a file
-- [ ] Commit: `chore: add data contracts research`
+- [x] Run `/wos:research`: "How should data contracts be designed, enforced, and evolved between data producers and consumers? Cover: contract structure and standards (Open Data Contract Standard/ODCS, dbt contracts) and their differences; schema contracts (column names, types, nullability, keys), freshness/SLA contracts, and quality contracts; contract versioning strategies (backward vs. forward compatibility); producer/consumer negotiation workflows; enforcement patterns (CI-time breaking change detection, runtime validation); schema registry tooling (Confluent Schema Registry, AWS Glue Schema Registry); contract-driven development workflow." <!-- sha:ab8afae -->
+- [x] Verify: `ls docs/research/ | grep data-contracts` returns a file <!-- sha:ab8afae -->
+- [x] Commit: `chore: add data contracts research` <!-- sha:ab8afae -->
 
 ### Task 21: Research — Data Product Scoping & Business Requirements
 
@@ -197,9 +197,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 22: Research — Skill Design
 
-- [ ] Run `/wos:research`: "What are best practices for designing AI agentic skills with deterministic feedback loops and phased execution? Cover: phased skill structure (plan→execute→resume→verify) with inspectable artifacts at each phase; deterministic phase gate patterns — structuring Python/CLI checks to validate artifacts without LLM judgment; Claude Code hooks ecosystem (PostToolUse, PreToolUse, Stop) for automatically triggering checks on agent tool events; shared vs. per-skill check library composition; error output design for agent self-correction; atomic vs. composite skill decomposition; cross-provider compatibility (Claude, GitHub Copilot, OpenAI); resumability patterns after interruption."
-- [ ] Verify: `ls docs/research/ | grep skill-design` returns a file
-- [ ] Commit: `chore: add skill design research`
+- [x] Run `/wos:research`: "What are best practices for designing AI agentic skills with deterministic feedback loops and phased execution? Cover: phased skill structure (plan→execute→resume→verify) with inspectable artifacts at each phase; deterministic phase gate patterns — structuring Python/CLI checks to validate artifacts without LLM judgment; Claude Code hooks ecosystem (PostToolUse, PreToolUse, Stop) for automatically triggering checks on agent tool events; shared vs. per-skill check library composition; error output design for agent self-correction; atomic vs. composite skill decomposition; cross-provider compatibility (Claude, GitHub Copilot, OpenAI); resumability patterns after interruption." <!-- sha:ac34300 -->
+- [x] Verify: `ls docs/research/ | grep skill-design` returns a file <!-- sha:ac34300 -->
+- [x] Commit: `chore: add skill design research` <!-- sha:ac34300 -->
 
 ### Task 23: Research — Canonical Frameworks & Lifecycle Models
 
