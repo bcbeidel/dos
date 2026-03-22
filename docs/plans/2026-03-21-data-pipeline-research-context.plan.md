@@ -276,59 +276,59 @@ For each area: produce multiple focused context files if sub-topics are distinct
 - [x] Commit: `docs: add privacy engineering context` <!-- sha:791958a -->
 
 ### Task 36: Distill — Quality Engineering
-- [ ] Run `/wos:distill`
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add quality engineering context`
+- [x] Run `/wos:distill`; split into profiling, dimensions, anomaly detection, scoring, SLAs <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add quality engineering context` <!-- sha:072226b -->
 
 ### Task 37: Distill — Validation Frameworks & Testing Tools
-- [ ] Run `/wos:distill`; consider splitting tool comparison from tiered strategy guidance
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add validation frameworks context`
+- [x] Run `/wos:distill`; split into tool comparison and tiered strategy <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add validation frameworks context` <!-- sha:072226b -->
 
 ### Task 38: Distill — Data Discovery
-- [ ] Run `/wos:distill`
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add data discovery context`
+- [x] Run `/wos:distill`; split into source evaluation, onboarding, schema drift <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add data discovery context` <!-- sha:072226b -->
 
 ### Task 39: Distill — Stream Processing
-- [ ] Run `/wos:distill`; consider splitting tool comparison from windowing/watermarking patterns
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add stream processing context`
+- [x] Run `/wos:distill`; split into tool comparison, windowing/watermarks, observability <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add stream processing context` <!-- sha:072226b -->
 
 ### Task 40: Distill — CDC & Event-Driven Ingestion
-- [ ] Run `/wos:distill`; consider splitting CDC tooling from Kafka/event-sourcing patterns
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add cdc & event-driven ingestion context`
+- [x] Run `/wos:distill`; split into CDC mechanisms/tooling, Kafka patterns, lakehouse writes <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add cdc & event-driven ingestion context` <!-- sha:072226b -->
 
 ### Task 41: Distill — Data Platform Engineering
-- [ ] Run `/wos:distill`
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add data platform engineering context`
+- [x] Run `/wos:distill`; split into Terraform IaC, environment provisioning, compute governance <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add data platform engineering context` <!-- sha:072226b -->
 
 ### Task 42: Distill — Platform Security & Access Control
-- [ ] Run `/wos:distill`; consider splitting network/IAM from secrets management
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add platform security context`
+- [x] Run `/wos:distill`; split into private networking, secrets management, cross-cloud <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add platform security context` <!-- sha:072226b -->
 
 ### Task 43: Distill — Data Contracts
-- [ ] Run `/wos:distill`; consider splitting contract structure from enforcement/testing and versioning
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add data contracts context`
+- [x] Run `/wos:distill`; split into contract structure and enforcement/versioning <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add data contracts context` <!-- sha:072226b -->
 
 ### Task 44: Distill — Data Product Scoping & Business Requirements
-- [ ] Run `/wos:distill`; consider splitting requirement gathering from change propagation
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add data product scoping context`
+- [x] Run `/wos:distill`; split into requirements gathering and consumption-driven architecture <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add data product scoping context` <!-- sha:072226b -->
 
 ### Task 45: Distill — Skill Design
-- [ ] Run `/wos:distill`; consider splitting agentic phase patterns from deterministic gates/hooks
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add skill design context`
+- [x] Run `/wos:distill`; split into agentic phase patterns, deterministic gates, cross-provider <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add skill design context` <!-- sha:072226b -->
 
 ### Task 46: Distill — Canonical Frameworks & Lifecycle Models
-- [ ] Run `/wos:distill`; distil into a single context file capturing the selected lifecycle model and canonical reference set with rationale
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add canonical frameworks & lifecycle models context`
+- [x] Run `/wos:distill`; single context file with lifecycle model and reference set <!-- sha:072226b -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:072226b -->
+- [x] Commit: `docs: add canonical frameworks & lifecycle models context` <!-- sha:072226b -->
 
 ---
 
