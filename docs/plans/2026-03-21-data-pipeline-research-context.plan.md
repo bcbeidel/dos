@@ -191,9 +191,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 21: Research — Data Product Scoping & Business Requirements
 
-- [ ] Run `/wos:research`: "How should data engineers scope, document, and manage business requirements for data products — and how do requirements drive architecture decisions? Cover: stakeholder requirement gathering techniques for data contexts; use case documentation (query patterns, update frequency, consumer SLAs); reverse-engineering architecture choices from consumption patterns (query shape → modeling choice, freshness needs → incremental strategy); requirement change management — detecting when consumer needs shift and propagating changes back through pipeline design; data product thinking (ownership, SLAs, versioning); prioritization of competing consumer requirements. Frame within the lifecycle model established in the Canonical Frameworks & Lifecycle Models research."
-- [ ] Verify: `ls docs/research/ | grep scoping\|business-requirements` returns a file
-- [ ] Commit: `chore: add data product scoping & business requirements research`
+- [x] Run `/wos:research`: "How should data engineers scope, document, and manage business requirements for data products — and how do requirements drive architecture decisions? Cover: stakeholder requirement gathering techniques for data contexts; use case documentation (query patterns, update frequency, consumer SLAs); reverse-engineering architecture choices from consumption patterns (query shape → modeling choice, freshness needs → incremental strategy); requirement change management — detecting when consumer needs shift and propagating changes back through pipeline design; data product thinking (ownership, SLAs, versioning); prioritization of competing consumer requirements. Frame within the lifecycle model established in the Canonical Frameworks & Lifecycle Models research." <!-- sha:470d277 -->
+- [x] Verify: `ls docs/research/ | grep scoping\|business-requirements` returns a file <!-- sha:470d277 -->
+- [x] Commit: `chore: add data product scoping & business requirements research` <!-- sha:470d277 -->
 
 ### Task 22: Research — Skill Design
 
@@ -203,9 +203,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 23: Research — Canonical Frameworks & Lifecycle Models
 
-- [ ] Run `/wos:research`: "What books, standards, and conceptual frameworks are considered most authoritative for modern data engineering practice, and which best serves as a lifecycle model for organizing AI-assisted workflow skills? Cover: *Fundamentals of Data Engineering* (Reimer & Reis) — the Generation→Ingestion→Transformation→Serving→Consumption lifecycle, its scope, and industry adoption; DAMA-DMBOK knowledge area taxonomy and its coverage of data engineering concerns; Kimball's dimensional lifecycle methodology; *Designing Data-Intensive Applications* (Kleppmann) and its focus areas; any other widely-cited modern references; evaluation criteria: lifecycle completeness, alignment with modern data stack tooling, community consensus, applicability to skill design. Output: a clear recommendation for the canonical lifecycle model and reference set to use as the organizing spine for this skill library."
-- [ ] Verify: `ls docs/research/ | grep framework\|lifecycle-canon` returns a file
-- [ ] Commit: `chore: add canonical frameworks & lifecycle models research`
+- [x] Run `/wos:research`: "What books, standards, and conceptual frameworks are considered most authoritative for modern data engineering practice, and which best serves as a lifecycle model for organizing AI-assisted workflow skills? Cover: *Fundamentals of Data Engineering* (Reimer & Reis) — the Generation→Ingestion→Transformation→Serving→Consumption lifecycle, its scope, and industry adoption; DAMA-DMBOK knowledge area taxonomy and its coverage of data engineering concerns; Kimball's dimensional lifecycle methodology; *Designing Data-Intensive Applications* (Kleppmann) and its focus areas; any other widely-cited modern references; evaluation criteria: lifecycle completeness, alignment with modern data stack tooling, community consensus, applicability to skill design. Output: a clear recommendation for the canonical lifecycle model and reference set to use as the organizing spine for this skill library." <!-- sha:a0be427 -->
+- [x] Verify: `ls docs/research/ | grep framework\|lifecycle-canon` returns a file <!-- sha:a0be427 -->
+- [x] Commit: `chore: add canonical frameworks & lifecycle models research` <!-- sha:a0be427 -->
 
 ---
 
