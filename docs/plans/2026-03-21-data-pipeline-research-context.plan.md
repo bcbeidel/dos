@@ -2,7 +2,7 @@
 name: Data Pipeline Research & Context Foundation
 description: Run structured research and distillation across 23 data pipeline characteristic areas, producing grounded context documents that underpin the dos skill library.
 type: plan
-status: draft
+status: executing
 related:
   - docs/prompts/data-pipeline-knowledge-foundation.prompt.md
 ---
@@ -60,7 +60,7 @@ Won't have:
 - Create: `docs/research/_index.md`
 - Create: `docs/context/_index.md`
 
-**Branch:** `feat-init`
+**Branch:** `feat-data-pipeline-research-context`
 **PR:** TBD
 
 ---
@@ -71,9 +71,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 1: Research — Pipeline Design & Architecture
 
-- [ ] Run `/wos:research`: "How should batch data pipelines be structured and architected in a modern data stack? Cover: medallion/layered architecture (Bronze→Silver→Gold) and when to add or skip layers; batch vs. streaming selection criteria and decision framework; incremental loading patterns (full refresh, append, merge/upsert) and when to use each; backfill and historical load strategies; schema evolution and versioning approaches. Exclude data modeling approaches (covered separately) and storage format selection (covered separately)."
-- [ ] Verify: `ls docs/research/ | grep pipeline-design` returns a file
-- [ ] Commit: `chore: add pipeline design & architecture research`
+- [x] Run `/wos:research`: "How should batch data pipelines be structured and architected in a modern data stack? Cover: medallion/layered architecture (Bronze→Silver→Gold) and when to add or skip layers; batch vs. streaming selection criteria and decision framework; incremental loading patterns (full refresh, append, merge/upsert) and when to use each; backfill and historical load strategies; schema evolution and versioning approaches. Exclude data modeling approaches (covered separately) and storage format selection (covered separately)." <!-- sha:f79be50 -->
+- [x] Verify: `ls docs/research/ | grep pipeline-design` returns a file <!-- sha:f79be50 -->
+- [x] Commit: `chore: add pipeline design & architecture research` <!-- sha:f79be50 -->
 
 ### Task 2: Research — Data Modeling
 
