@@ -89,9 +89,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 4: Research — Production Platform Landscape
 
-- [ ] Run `/wos:research`: "How do ClickHouse, BigQuery, Redshift, and Athena compare as analytical data platforms, and what are the pipeline design implications of each? Cover: ClickHouse MergeTree engine family, ReplacingMergeTree/CollapsingMergeTree incremental patterns, no-transaction guarantees, SQL dialect; BigQuery serverless model, partitioning/clustering, nested data, streaming inserts; Redshift distribution styles, sort keys, Spectrum; Athena serverless S3 query model, Iceberg integration, cost model. For each: dbt adapter support and limitations, dlt destination compatibility, selection criteria."
-- [ ] Verify: `ls docs/research/ | grep platform-landscape\|production-platform` returns a file
-- [ ] Commit: `chore: add production platform landscape research`
+- [x] Run `/wos:research`: "How do ClickHouse, BigQuery, Redshift, Athena, Databricks, and Snowflake compare as analytical data platforms, and what are the pipeline design implications of each?" (expanded from 4 to 6 platforms per user request) <!-- sha:b52689d -->
+- [x] Verify: `ls docs/research/ | grep platform-landscape\|production-platform` returns a file <!-- sha:b52689d -->
+- [x] Commit: `chore: add production platform landscape research` <!-- sha:b52689d -->
 
 ### Task 5: Research — Development Workflow
 
