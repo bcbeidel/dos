@@ -246,34 +246,34 @@ For each area: produce multiple focused context files if sub-topics are distinct
 - [x] Commit: `docs: add cross-platform adapter compatibility context` <!-- sha:4d82b3f -->
 
 ### Task 30: Distill — Pipeline Orchestration
-- [ ] Run `/wos:distill`; consider one comparative overview vs. per-tool files
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add pipeline orchestration context`
+- [x] Run `/wos:distill`; single comparative overview <!-- sha:791958a -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:791958a -->
+- [x] Commit: `docs: add pipeline orchestration context` <!-- sha:791958a -->
 
 ### Task 31: Distill — Operations & Reliability
-- [ ] Run `/wos:distill`
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add operations & reliability context`
+- [x] Run `/wos:distill`; split into observability pillars, retry/failure patterns, freshness SLAs <!-- sha:791958a -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:791958a -->
+- [x] Commit: `docs: add operations & reliability context` <!-- sha:791958a -->
 
 ### Task 32: Distill — Cost Optimization & FinOps
-- [ ] Run `/wos:distill`; consider splitting platform-specific cost from query/storage optimization
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add cost optimization & finops context`
+- [x] Run `/wos:distill`; split into platform cost, query/storage optimization, finops governance <!-- sha:791958a -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:791958a -->
+- [x] Commit: `docs: add cost optimization & finops context` <!-- sha:791958a -->
 
 ### Task 33: Distill — Governance & Compliance
-- [ ] Run `/wos:distill`
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add governance & compliance context`
+- [x] Run `/wos:distill`; split into governance foundations, audit trail design <!-- sha:791958a -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:791958a -->
+- [x] Commit: `docs: add governance & compliance context` <!-- sha:791958a -->
 
 ### Task 34: Distill — Data Catalog & Lineage
-- [ ] Run `/wos:distill`; consider splitting catalog tooling comparison from lineage standards
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add data catalog & lineage context`
+- [x] Run `/wos:distill`; split into catalog selection, lineage implementation <!-- sha:791958a -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:791958a -->
+- [x] Commit: `docs: add data catalog & lineage context` <!-- sha:791958a -->
 
 ### Task 35: Distill — Privacy Engineering
-- [ ] Run `/wos:distill`; consider splitting masking/tokenization techniques from regulatory requirements
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add privacy engineering context`
+- [x] Run `/wos:distill`; split into masking/tokenization, regulatory requirements, right-to-erasure <!-- sha:791958a -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:791958a -->
+- [x] Commit: `docs: add privacy engineering context` <!-- sha:791958a -->
 
 ### Task 36: Distill — Quality Engineering
 - [ ] Run `/wos:distill`
