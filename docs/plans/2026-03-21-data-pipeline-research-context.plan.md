@@ -179,9 +179,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 19: Research — Platform Security & Access Control
 
-- [ ] Run `/wos:research`: "What network, identity, and secrets management patterns govern secure data platform deployments? Cover: private networking for Databricks, Snowflake, and ClickHouse (VPC, PrivateLink, private endpoints); RBAC vs. ABAC design patterns, Unity Catalog privilege model, Snowflake RBAC hierarchy; service principal design and least-privilege patterns; secrets management (HashiCorp Vault, AWS Secrets Manager, Azure Key Vault) and rotation strategies; audit logging for security and compliance; cross-cloud and cross-region access patterns."
-- [ ] Verify: `ls docs/research/ | grep platform-security\|access-control` returns a file
-- [ ] Commit: `chore: add platform security & access control research`
+- [x] Run `/wos:research`: "What network, identity, and secrets management patterns govern secure data platform deployments? Cover: private networking for Databricks, Snowflake, and ClickHouse (VPC, PrivateLink, private endpoints); RBAC vs. ABAC design patterns, Unity Catalog privilege model, Snowflake RBAC hierarchy; service principal design and least-privilege patterns; secrets management (HashiCorp Vault, AWS Secrets Manager, Azure Key Vault) and rotation strategies; audit logging for security and compliance; cross-cloud and cross-region access patterns." <!-- sha:b8d3754 -->
+- [x] Verify: `ls docs/research/ | grep platform-security\|access-control` returns a file <!-- sha:b8d3754 -->
+- [x] Commit: `chore: add platform security & access control research` <!-- sha:b8d3754 -->
 
 ### Task 20: Research — Data Contracts
 
