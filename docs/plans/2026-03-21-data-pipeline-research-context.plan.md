@@ -137,15 +137,15 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 12: Research — Privacy Engineering
 
-- [ ] Run `/wos:research`: "What technical patterns and regulatory requirements govern privacy engineering for data pipelines? Cover: PII and sensitive data identification and classification (automated scanning tools, taxonomy design); data masking techniques (static vs. dynamic masking), tokenization, pseudonymization, and format-preserving encryption — tradeoffs and use cases; GDPR, CCPA compliance requirements that affect pipeline architecture; right-to-erasure implementation in data warehouses — deletion propagation through medallion layers in Delta Lake and Iceberg; privacy-by-design principles (data minimization, retention enforcement, encryption at rest/transit)."
-- [ ] Verify: `ls docs/research/ | grep privacy\|pii` returns a file
-- [ ] Commit: `chore: add privacy engineering research`
+- [x] Run `/wos:research`: "What technical patterns and regulatory requirements govern privacy engineering for data pipelines? Cover: PII and sensitive data identification and classification (automated scanning tools, taxonomy design); data masking techniques (static vs. dynamic masking), tokenization, pseudonymization, and format-preserving encryption — tradeoffs and use cases; GDPR, CCPA compliance requirements that affect pipeline architecture; right-to-erasure implementation in data warehouses — deletion propagation through medallion layers in Delta Lake and Iceberg; privacy-by-design principles (data minimization, retention enforcement, encryption at rest/transit)." <!-- sha:dbee403 -->
+- [x] Verify: `ls docs/research/ | grep privacy\|pii` returns a file <!-- sha:dbee403 -->
+- [x] Commit: `chore: add privacy engineering research` <!-- sha:dbee403 -->
 
 ### Task 13: Research — Quality Engineering
 
-- [ ] Run `/wos:research`: "What methods and frameworks should data engineers use to measure and monitor data quality? Cover: data profiling techniques (shape, distribution, completeness, uniqueness, cardinality); anomaly and drift detection methods (statistical process control, z-score, IQR, ML-based approaches) and when each applies; data quality dimension taxonomy (completeness, accuracy, consistency, timeliness, validity, uniqueness); quality scoring and measurement frameworks; SLA definition and tracking for data quality. Exclude validation tooling (covered separately). Ground findings in DAMA-DMBOK."
-- [ ] Verify: `ls docs/research/ | grep quality-engineering` returns a file
-- [ ] Commit: `chore: add quality engineering research`
+- [x] Run `/wos:research`: "What methods and frameworks should data engineers use to measure and monitor data quality? Cover: data profiling techniques (shape, distribution, completeness, uniqueness, cardinality); anomaly and drift detection methods (statistical process control, z-score, IQR, ML-based approaches) and when each applies; data quality dimension taxonomy (completeness, accuracy, consistency, timeliness, validity, uniqueness); quality scoring and measurement frameworks; SLA definition and tracking for data quality. Exclude validation tooling (covered separately). Ground findings in DAMA-DMBOK." <!-- sha:dd92ce3 -->
+- [x] Verify: `ls docs/research/ | grep quality-engineering` returns a file <!-- sha:dd92ce3 -->
+- [x] Commit: `chore: add quality engineering research` <!-- sha:dd92ce3 -->
 
 ### Task 14: Research — Validation Frameworks & Testing Tools
 
