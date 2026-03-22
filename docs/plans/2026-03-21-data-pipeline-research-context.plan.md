@@ -119,9 +119,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 9: Research — Cost Optimization & FinOps
 
-- [ ] Run `/wos:research`: "How should data engineering teams optimize and govern costs across Databricks, Snowflake, ClickHouse, and BigQuery? Cover: Databricks cluster sizing, spot vs. on-demand, Photon, DBU optimization, auto-scaling policies; Snowflake warehouse sizing, auto-suspend/resume, credit optimization, result cache; ClickHouse compute cost patterns and tiered storage; BigQuery on-demand vs. capacity pricing, slot optimization; cross-platform query cost optimization (partition pruning, incremental materialization, avoiding full scans); storage cost optimization (compression, retention, tiering); cost attribution, tagging, and chargeback patterns."
-- [ ] Verify: `ls docs/research/ | grep cost\|finops` returns a file
-- [ ] Commit: `chore: add cost optimization & finops research`
+- [x] Run `/wos:research`: "How should data engineering teams optimize and govern costs across Databricks, Snowflake, ClickHouse, and BigQuery? Cover: Databricks cluster sizing, spot vs. on-demand, Photon, DBU optimization, auto-scaling policies; Snowflake warehouse sizing, auto-suspend/resume, credit optimization, result cache; ClickHouse compute cost patterns and tiered storage; BigQuery on-demand vs. capacity pricing, slot optimization; cross-platform query cost optimization (partition pruning, incremental materialization, avoiding full scans); storage cost optimization (compression, retention, tiering); cost attribution, tagging, and chargeback patterns." <!-- sha:7c88b44 -->
+- [x] Verify: `ls docs/research/ | grep cost\|finops` returns a file <!-- sha:7c88b44 -->
+- [x] Commit: `chore: add cost optimization & finops research` <!-- sha:7c88b44 -->
 
 ### Task 10: Research — Governance & Compliance
 
