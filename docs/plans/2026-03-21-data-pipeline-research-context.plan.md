@@ -77,9 +77,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 2: Research — Data Modeling
 
-- [ ] Run `/wos:research`: "What are the tradeoffs between Kimball dimensional modeling, data vault, and wide table (OBT) approaches for analytics engineering, and how should the choice be made? Cover: Kimball star/snowflake schema, facts, dimensions, slowly changing dimensions; data vault hubs/links/satellites and business key design; OBT/wide table patterns and their query implications; selection criteria by use case, team maturity, and change frequency; how each approach adapts to DuckDB, Snowflake, Databricks, and ClickHouse storage targets. Ground findings in Kimball's *The Data Warehouse Toolkit* and DAMA-DMBOK."
-- [ ] Verify: `ls docs/research/ | grep data-modeling` returns a file
-- [ ] Commit: `chore: add data modeling research`
+- [x] Run `/wos:research`: "What are the tradeoffs between Kimball dimensional modeling, data vault, and wide table (OBT) approaches for analytics engineering, and how should the choice be made? Cover: Kimball star/snowflake schema, facts, dimensions, slowly changing dimensions; data vault hubs/links/satellites and business key design; OBT/wide table patterns and their query implications; selection criteria by use case, team maturity, and change frequency; how each approach adapts to DuckDB, Snowflake, Databricks, and ClickHouse storage targets. Ground findings in Kimball's *The Data Warehouse Toolkit* and DAMA-DMBOK." <!-- sha:90ea158 -->
+- [x] Verify: `ls docs/research/ | grep data-modeling` returns a file <!-- sha:90ea158 -->
+- [x] Commit: `chore: add data modeling research` <!-- sha:90ea158 -->
 
 ### Task 3: Research — Open Table Formats
 
