@@ -155,21 +155,21 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 15: Research — Data Discovery
 
-- [ ] Run `/wos:research`: "What methodologies should data engineers use to evaluate and onboard new data sources? Cover: source system evaluation criteria (connectivity, volume, freshness, schema stability, data quality, access complexity); source system classification (transactional, event stream, third-party SaaS, file-based) and how classification affects ingestion approach; structured discovery workflows — what to assess before building a pipeline; metadata documentation standards for new sources; integration of discovery findings with catalog tooling."
-- [ ] Verify: `ls docs/research/ | grep data-discovery` returns a file
-- [ ] Commit: `chore: add data discovery research`
+- [x] Run `/wos:research`: "What methodologies should data engineers use to evaluate and onboard new data sources? Cover: source system evaluation criteria (connectivity, volume, freshness, schema stability, data quality, access complexity); source system classification (transactional, event stream, third-party SaaS, file-based) and how classification affects ingestion approach; structured discovery workflows — what to assess before building a pipeline; metadata documentation standards for new sources; integration of discovery findings with catalog tooling." <!-- sha:3519c70 -->
+- [x] Verify: `ls docs/research/ | grep data-discovery` returns a file <!-- sha:3519c70 -->
+- [x] Commit: `chore: add data discovery research` <!-- sha:3519c70 -->
 
 ### Task 16: Research — Stream Processing
 
-- [ ] Run `/wos:research`: "How should streaming data pipelines be designed and operated, and what are the tradeoffs between Spark Structured Streaming, Databricks DLT, and Apache Flink? Cover: Spark Structured Streaming sources, sinks, triggers, and checkpointing; Databricks Delta Live Tables for streaming; Flink stateful processing, event time handling, exactly-once semantics; late data handling and watermarking strategies; windowing patterns (tumbling, sliding, session); micro-batch vs. continuous streaming tradeoffs; testing strategies for streaming pipelines; observability (lag, throughput, backpressure monitoring)."
-- [ ] Verify: `ls docs/research/ | grep stream-processing` returns a file
-- [ ] Commit: `chore: add stream processing research`
+- [x] Run `/wos:research`: "How should streaming data pipelines be designed and operated, and what are the tradeoffs between Spark Structured Streaming, Databricks DLT, and Apache Flink? Cover: Spark Structured Streaming sources, sinks, triggers, and checkpointing; Databricks Delta Live Tables for streaming; Flink stateful processing, event time handling, exactly-once semantics; late data handling and watermarking strategies; windowing patterns (tumbling, sliding, session); micro-batch vs. continuous streaming tradeoffs; testing strategies for streaming pipelines; observability (lag, throughput, backpressure monitoring)." <!-- sha:8c3489d -->
+- [x] Verify: `ls docs/research/ | grep stream-processing` returns a file <!-- sha:8c3489d -->
+- [x] Commit: `chore: add stream processing research` <!-- sha:8c3489d -->
 
 ### Task 17: Research — CDC & Event-Driven Ingestion
 
-- [ ] Run `/wos:research`: "What patterns and tooling govern Change Data Capture and event-driven data ingestion? Cover: CDC mechanisms (log-based, trigger-based, timestamp-based) and their reliability/latency tradeoffs; Debezium and AWS DMS as CDC tools; dlt CDC source patterns; Kafka-backed pipeline design (topic design, consumer groups, offset management, schema registry); event sourcing and the outbox/transactional outbox pattern; CDC writes into Delta Lake and Iceberg (merge vs. append-then-compact strategies); idempotency, ordering guarantees, and at-least-once vs. exactly-once delivery."
-- [ ] Verify: `ls docs/research/ | grep cdc\|event-driven` returns a file
-- [ ] Commit: `chore: add cdc & event-driven ingestion research`
+- [x] Run `/wos:research`: "What patterns and tooling govern Change Data Capture and event-driven data ingestion? Cover: CDC mechanisms (log-based, trigger-based, timestamp-based) and their reliability/latency tradeoffs; Debezium and AWS DMS as CDC tools; dlt CDC source patterns; Kafka-backed pipeline design (topic design, consumer groups, offset management, schema registry); event sourcing and the outbox/transactional outbox pattern; CDC writes into Delta Lake and Iceberg (merge vs. append-then-compact strategies); idempotency, ordering guarantees, and at-least-once vs. exactly-once delivery." <!-- sha:fe66d4c -->
+- [x] Verify: `ls docs/research/ | grep cdc\|event-driven` returns a file <!-- sha:fe66d4c -->
+- [x] Commit: `chore: add cdc & event-driven ingestion research` <!-- sha:fe66d4c -->
 
 ### Task 18: Research — Data Platform Engineering
 
