@@ -113,9 +113,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 8: Research — Operations & Reliability
 
-- [ ] Run `/wos:research`: "What observability, reliability, and incident response patterns are needed to operate data pipelines in production? Cover: observability instrumentation (run logs, row counts, latency metrics, pipeline health dashboards); alerting patterns and on-call response workflows for data pipelines; retry strategies (exponential backoff, partial retry, dead-letter queues) and failure classification; error handling patterns for dbt, dlt, and orchestrator failures; data freshness tracking and freshness SLA enforcement."
-- [ ] Verify: `ls docs/research/ | grep operations-reliability` returns a file
-- [ ] Commit: `chore: add operations & reliability research`
+- [x] Run `/wos:research`: "What observability, reliability, and incident response patterns are needed to operate data pipelines in production? Cover: observability instrumentation (run logs, row counts, latency metrics, pipeline health dashboards); alerting patterns and on-call response workflows for data pipelines; retry strategies (exponential backoff, partial retry, dead-letter queues) and failure classification; error handling patterns for dbt, dlt, and orchestrator failures; data freshness tracking and freshness SLA enforcement." <!-- sha:77ee2ed -->
+- [x] Verify: `ls docs/research/ | grep operations-reliability` returns a file <!-- sha:77ee2ed -->
+- [x] Commit: `chore: add operations & reliability research` <!-- sha:77ee2ed -->
 
 ### Task 9: Research — Cost Optimization & FinOps
 
