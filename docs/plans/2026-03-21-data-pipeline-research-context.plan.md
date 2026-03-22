@@ -216,34 +216,34 @@ All 23 research tasks are independent and can be dispatched in parallel.
 For each area: produce multiple focused context files if sub-topics are distinct (one concept per file, 200–800 words each). Consolidate with a related area only if significant overlap is found. Document splits and merges in commit messages.
 
 ### Task 24: Distill — Pipeline Design & Architecture
-- [ ] Run `/wos:distill`
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter (`name`, `description`, `type: context`)
-- [ ] Commit: `docs: add pipeline design context`
+- [x] Run `/wos:distill` <!-- sha:4d82b3f -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter (`name`, `description`, `type: context`) <!-- sha:4d82b3f -->
+- [x] Commit: `docs: add pipeline design context` <!-- sha:4d82b3f -->
 
 ### Task 25: Distill — Data Modeling
-- [ ] Run `/wos:distill`; consider splitting Kimball, data vault, and OBT if each is substantive
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add data modeling context`
+- [x] Run `/wos:distill`; split into Kimball, data vault, OBT, and selection criteria <!-- sha:4d82b3f -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:4d82b3f -->
+- [x] Commit: `docs: add data modeling context` <!-- sha:4d82b3f -->
 
 ### Task 26: Distill — Open Table Formats
-- [ ] Run `/wos:distill`; consider splitting format comparison from cross-platform compatibility
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add open table formats context`
+- [x] Run `/wos:distill`; split into format comparison, cross-platform compatibility, catalog interop <!-- sha:4d82b3f -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:4d82b3f -->
+- [x] Commit: `docs: add open table formats context` <!-- sha:4d82b3f -->
 
 ### Task 27: Distill — Production Platform Landscape
-- [ ] Run `/wos:distill`; consider one comparative overview vs. per-platform files
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add production platform landscape context`
+- [x] Run `/wos:distill`; split into platform comparison and tooling compatibility <!-- sha:4d82b3f -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:4d82b3f -->
+- [x] Commit: `docs: add production platform landscape context` <!-- sha:4d82b3f -->
 
 ### Task 28: Distill — Development Workflow
-- [ ] Run `/wos:distill`
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add development workflow context`
+- [x] Run `/wos:distill`; split into local dev, CI/CD, secrets, pre-commit hooks <!-- sha:4d82b3f -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:4d82b3f -->
+- [x] Commit: `docs: add development workflow context` <!-- sha:4d82b3f -->
 
 ### Task 29: Distill — Cross-Platform Adapter Compatibility
-- [ ] Run `/wos:distill`; consider splitting dbt adapter from dlt destination if both are rich
-- [ ] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter
-- [ ] Commit: `docs: add cross-platform adapter compatibility context`
+- [x] Run `/wos:distill`; split into dbt adapter gaps, dlt type mapping, portability strategy <!-- sha:4d82b3f -->
+- [x] Verify: output files in `docs/context/`, each 200–800 words, YAML frontmatter <!-- sha:4d82b3f -->
+- [x] Commit: `docs: add cross-platform adapter compatibility context` <!-- sha:4d82b3f -->
 
 ### Task 30: Distill — Pipeline Orchestration
 - [ ] Run `/wos:distill`; consider one comparative overview vs. per-tool files

@@ -26,6 +26,9 @@ sources:
   - https://learn.microsoft.com/en-us/azure/databricks/delta/update-schema
 related:
   - docs/plans/2026-03-21-data-pipeline-research-context.plan.md
+  - docs/context/medallion-architecture.md
+  - docs/context/incremental-loading-patterns.md
+  - docs/context/schema-evolution.md
 ---
 
 ## Summary
