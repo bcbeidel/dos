@@ -363,3 +363,41 @@ For each area: produce multiple focused context files if sub-topics are distinct
 ## Next Step
 
 When this plan is complete, invoke `/wos:brainstorm` with the full `docs/context/` corpus to identify and prioritize skill candidates. The brainstorm output becomes the skill design document that drives authoring. Do not pre-plan the discovery — let the research findings shape it.
+
+## Retrospective
+
+**Completed:** 2026-03-22 | **Duration:** Single session | **Commits:** 52
+
+### What worked well
+
+- **Parallel agent dispatch dramatically accelerated throughput.** Batching 4-6 research agents or 6-11 distillation agents in parallel reduced wall-clock time from what would have been 23+ sequential research cycles to ~4 waves. The plan's note that "all 23 research tasks are independent and can be dispatched in parallel" was the key enabler.
+- **The gatherer→evaluator→challenger→verifier→finalizer chain produced high-quality research.** The challenger stage consistently found substantive counter-evidence (SQLGlot's error rates, Dagster pricing surprises, dbt contract enforcement gaps, Prefect commit decline as vendor bias). Without the challenger, findings would have been uncritically vendor-aligned.
+- **Delegating full research documents to single agents** (gathering + challenge + synthesis + finalization in one prompt) worked well for Tasks 8-23 after the pattern was established in Tasks 5-7. This reduced orchestration overhead without sacrificing quality.
+- **Context file splitting decisions emerged naturally.** The plan's guidance to "split or merge as the material warrants" let each distillation agent make the right call — some areas produced 1 file (orchestration comparison, lifecycle model), others produced 4 (data modeling, dev workflow, governance).
+
+### What didn't work well
+
+- **Rate limits hit during the final distillation batch.** 8 of 11 agents in the last batch returned "You've hit your limit" — but the files had already been written to disk before the limit was reached. This was recoverable but could have caused data loss if files hadn't been flushed.
+- **Index file concurrency caused merge conflicts.** Multiple parallel agents updating `_index.md` simultaneously meant the index was incomplete after parallel batches. Required a full rebuild (Task 47) to reconcile. Future plans should have index updates as a sequential post-step, not per-agent.
+- **First commit captured all batch 1 context files together** instead of per-task commits. The plan called for individual commits per distillation task, but when multiple agents completed simultaneously, staging and committing per-task was impractical. The plan's commit-per-task pattern doesn't map well to parallel execution.
+- **Research-distill pipeline's "sequential execution" requirement was impractical.** The pipeline reference says "Execute research tasks sequentially. Each `/wos:research` invocation completes before the next begins." Following this literally would have taken 10x longer. Parallel dispatch was the right call but deviated from the documented pipeline protocol.
+
+### Metrics
+
+| Metric | Value |
+|--------|-------|
+| Research documents | 23 |
+| Total sources across all research | ~490 |
+| Total research word count | ~130K |
+| Context documents | 66 |
+| Context word count range | 479-799 (all within 200-800 target) |
+| Characteristic areas covered | 23/23 |
+| Git commits | 52 |
+| Validation criteria | 4/4 passed |
+
+### Recommendations for future plans
+
+1. **Design parallel-safe index updates.** Either make index files a sequential post-step or use a merge-safe format that handles concurrent appends.
+2. **Batch commits are fine for parallel work.** Don't force per-task commits when executing in parallel — batch by wave instead.
+3. **Rate limit awareness.** When dispatching 10+ agents, stagger slightly or accept that some may hit limits. Ensure file writes flush before agent completion reporting.
+4. **The research-distill pipeline protocol should acknowledge parallel execution.** The sequential requirement is a documentation artifact, not an architectural constraint — the no-nesting rule applies to subagents within skills, not to independent plan tasks.
