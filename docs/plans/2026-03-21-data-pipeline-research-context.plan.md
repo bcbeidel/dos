@@ -101,9 +101,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 6: Research — Cross-Platform Adapter Compatibility
 
-- [ ] Run `/wos:research`: "How do dbt and dlt behave across DuckDB, Snowflake, Databricks, and ClickHouse, and what compatibility patterns prevent local-to-production divergence? Cover: dbt adapter SQL dialect differences (DuckDB vs. Snowflake vs. Databricks Spark SQL vs. ClickHouse), adapter-specific macro patterns, feature gaps and workarounds; dlt destination differences in schema normalization, data type mapping, and nested data handling across the same four platforms; strategies for writing portable dbt models and dlt pipelines that behave consistently across targets."
-- [ ] Verify: `ls docs/research/ | grep adapter-compat\|cross-platform` returns a file
-- [ ] Commit: `chore: add cross-platform adapter compatibility research`
+- [x] Run `/wos:research`: "How do dbt and dlt behave across DuckDB, Snowflake, Databricks, and ClickHouse, and what compatibility patterns prevent local-to-production divergence? Cover: dbt adapter SQL dialect differences (DuckDB vs. Snowflake vs. Databricks Spark SQL vs. ClickHouse), adapter-specific macro patterns, feature gaps and workarounds; dlt destination differences in schema normalization, data type mapping, and nested data handling across the same four platforms; strategies for writing portable dbt models and dlt pipelines that behave consistently across targets." <!-- sha:87f1bda -->
+- [x] Verify: `ls docs/research/ | grep adapter-compat\|cross-platform` returns a file <!-- sha:87f1bda -->
+- [x] Commit: `chore: add cross-platform adapter compatibility research` <!-- sha:87f1bda -->
 
 ### Task 7: Research — Pipeline Orchestration
 
