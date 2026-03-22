@@ -6,6 +6,7 @@ related:
   - docs/research/2026-03-22-operations-reliability.research.md
   - docs/context/data-freshness-slas.md
   - docs/context/ci-cd-pipeline-design.md
+  - docs/context/schema-drift-risk.md
 ---
 
 ## Key Takeaway

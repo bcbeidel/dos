@@ -6,6 +6,7 @@ related:
   - docs/context/data-lineage-implementation.md
   - docs/context/iceberg-catalog-interoperability.md
   - docs/research/2026-03-22-data-catalog-lineage.research.md
+  - docs/context/data-source-onboarding.md
 ---
 
 ## Key Insight

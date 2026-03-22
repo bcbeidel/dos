@@ -29,6 +29,9 @@ related:
   - docs/research/2026-03-21-pipeline-design-architecture.research.md
   - docs/research/2026-03-22-pipeline-orchestration.research.md
   - docs/research/2026-03-22-operations-reliability.research.md
+  - docs/context/stream-processing-comparison.md
+  - docs/context/streaming-windowing-watermarks.md
+  - docs/context/streaming-observability-backpressure.md
 ---
 
 ## Summary

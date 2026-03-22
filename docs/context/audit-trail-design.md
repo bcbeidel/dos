@@ -4,6 +4,7 @@ description: "Compliant audit trails require immutable append-only storage, SHA-
 type: context
 related:
   - docs/research/2026-03-22-governance-compliance.research.md
+  - docs/research/2026-03-22-platform-security-access-control.research.md
   - docs/context/data-governance-foundations.md
   - docs/context/row-column-security-comparison.md
 ---

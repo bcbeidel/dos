@@ -5,6 +5,10 @@ type: context
 related:
   - docs/research/2026-03-21-pipeline-design-architecture.research.md
   - docs/context/incremental-loading-patterns.md
+  - docs/context/data-contract-structure.md
+  - docs/context/data-contract-enforcement-versioning.md
+  - docs/context/schema-drift-risk.md
+  - docs/context/data-contracts.md
 ---
 
 ## Key Takeaway

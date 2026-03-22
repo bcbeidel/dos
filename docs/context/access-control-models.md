@@ -4,9 +4,11 @@ description: "RBAC vs ABAC tradeoffs for data platforms; Terraform for access-as
 type: context
 related:
   - docs/research/2026-03-22-governance-compliance.research.md
+  - docs/research/2026-03-22-platform-security-access-control.research.md
   - docs/context/data-governance-foundations.md
   - docs/context/row-column-security-comparison.md
   - docs/context/secrets-environment-management.md
+  - docs/context/secrets-management-rotation.md
 ---
 
 ## Key Insight
