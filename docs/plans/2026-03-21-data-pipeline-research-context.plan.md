@@ -125,9 +125,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 10: Research — Governance & Compliance
 
-- [ ] Run `/wos:research`: "What governance and compliance mechanisms should data engineers implement in pipelines and warehouses? Cover: audit trail design and implementation for data access and pipeline execution; row-level security patterns across Databricks, Snowflake, and ClickHouse; column-level access and masking policies; entitlement management and access review workflows; policy-as-code approaches for data access control. Exclude PII/privacy techniques (covered separately) and catalog/lineage tooling (covered separately). Ground findings in DAMA-DMBOK."
-- [ ] Verify: `ls docs/research/ | grep governance-compliance` returns a file
-- [ ] Commit: `chore: add governance & compliance research`
+- [x] Run `/wos:research`: "What governance and compliance mechanisms should data engineers implement in pipelines and warehouses? Cover: audit trail design and implementation for data access and pipeline execution; row-level security patterns across Databricks, Snowflake, and ClickHouse; column-level access and masking policies; entitlement management and access review workflows; policy-as-code approaches for data access control. Exclude PII/privacy techniques (covered separately) and catalog/lineage tooling (covered separately). Ground findings in DAMA-DMBOK." <!-- sha:be41291 -->
+- [x] Verify: `ls docs/research/ | grep governance-compliance` returns a file <!-- sha:be41291 -->
+- [x] Commit: `chore: add governance & compliance research` <!-- sha:be41291 -->
 
 ### Task 11: Research — Data Catalog & Lineage
 
