@@ -83,9 +83,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 3: Research — Open Table Formats
 
-- [ ] Run `/wos:research`: "What are the tradeoffs between Delta Lake, Apache Iceberg, Apache Parquet, ORC, and Avro as data lake and lakehouse storage formats, and how should a format be chosen? Cover: ACID transaction support, time travel, schema evolution, and partition evolution per format; cross-platform read/write compatibility across Databricks, Snowflake, ClickHouse, BigQuery, Trino, and Spark; catalog compatibility implications (Unity Catalog, Snowflake catalogs, AWS Glue); ClickHouse native format interoperability with open formats; format selection criteria by use case (batch, streaming, CDC, cross-platform sharing)."
-- [ ] Verify: `ls docs/research/ | grep table-formats\|open-formats` returns a file
-- [ ] Commit: `chore: add open table formats research`
+- [x] Run `/wos:research`: "What are the tradeoffs between Delta Lake, Apache Iceberg, Apache Parquet, ORC, and Avro as data lake and lakehouse storage formats, and how should a format be chosen? Cover: ACID transaction support, time travel, schema evolution, and partition evolution per format; cross-platform read/write compatibility across Databricks, Snowflake, ClickHouse, BigQuery, Trino, and Spark; catalog compatibility implications (Unity Catalog, Snowflake catalogs, AWS Glue); ClickHouse native format interoperability with open formats; format selection criteria by use case (batch, streaming, CDC, cross-platform sharing)." <!-- sha:5adc78c -->
+- [x] Verify: `ls docs/research/ | grep table-formats\|open-formats` returns a file <!-- sha:5adc78c -->
+- [x] Commit: `chore: add open table formats research` <!-- sha:5adc78c -->
 
 ### Task 4: Research — Production Platform Landscape
 
