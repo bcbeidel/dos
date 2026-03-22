@@ -149,9 +149,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 14: Research — Validation Frameworks & Testing Tools
 
-- [ ] Run `/wos:research`: "What are the tradeoffs between dbt tests, Great Expectations, Soda, Pandera, and pytest-based data testing, and how should a tiered validation strategy be structured? Cover: dbt schema tests, singular tests, custom generic tests, dbt-utils, dbt-expectations; Great Expectations expectations, suites, checkpoints, and data docs; Soda checks, scans, and agreements; Pandera DataFrame schema validation and pytest-based tests against DuckDB; tiered strategy: local Python checks → dbt CI tests → full GE/Soda suite in production; tool selection criteria, integration complexity, and maintenance burden comparison."
-- [ ] Verify: `ls docs/research/ | grep validation\|testing-tools` returns a file
-- [ ] Commit: `chore: add validation frameworks & testing tools research`
+- [x] Run `/wos:research`: "What are the tradeoffs between dbt tests, Great Expectations, Soda, Pandera, and pytest-based data testing, and how should a tiered validation strategy be structured? Cover: dbt schema tests, singular tests, custom generic tests, dbt-utils, dbt-expectations; Great Expectations expectations, suites, checkpoints, and data docs; Soda checks, scans, and agreements; Pandera DataFrame schema validation and pytest-based tests against DuckDB; tiered strategy: local Python checks → dbt CI tests → full GE/Soda suite in production; tool selection criteria, integration complexity, and maintenance burden comparison." <!-- sha:c002513 -->
+- [x] Verify: `ls docs/research/ | grep validation\|testing-tools` returns a file <!-- sha:c002513 -->
+- [x] Commit: `chore: add validation frameworks & testing tools research` <!-- sha:c002513 -->
 
 ### Task 15: Research — Data Discovery
 
