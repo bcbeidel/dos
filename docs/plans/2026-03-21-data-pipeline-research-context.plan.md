@@ -95,9 +95,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 5: Research — Development Workflow
 
-- [ ] Run `/wos:research`: "What are best practices for a local-to-production data engineering development workflow using DuckDB, dlt, and dbt? Cover: local development end-to-end (source→DuckDB→tested artifact); environment management across local/staging/production; secrets and configuration management; CI/CD pipeline design for dbt and dlt projects (linting, testing, deployment); git hooks (pre-commit framework) and dbt hooks (on-run-start/end, pre/post-hook) as fast-feedback mechanisms. Exclude orchestration tooling (covered separately)."
-- [ ] Verify: `ls docs/research/ | grep development-workflow` returns a file
-- [ ] Commit: `chore: add development workflow research`
+- [x] Run `/wos:research`: "What are best practices for a local-to-production data engineering development workflow using DuckDB, dlt, and dbt? Cover: local development end-to-end (source→DuckDB→tested artifact); environment management across local/staging/production; secrets and configuration management; CI/CD pipeline design for dbt and dlt projects (linting, testing, deployment); git hooks (pre-commit framework) and dbt hooks (on-run-start/end, pre/post-hook) as fast-feedback mechanisms. Exclude orchestration tooling (covered separately)." <!-- sha:1b1921b -->
+- [x] Verify: `ls docs/research/ | grep development-workflow` returns a file <!-- sha:1b1921b -->
+- [x] Commit: `chore: add development workflow research` <!-- sha:1b1921b -->
 
 ### Task 6: Research — Cross-Platform Adapter Compatibility
 
