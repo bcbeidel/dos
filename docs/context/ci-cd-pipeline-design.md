@@ -6,6 +6,8 @@ related:
   - docs/research/2026-03-22-development-workflow.research.md
   - docs/context/local-duckdb-development.md
   - docs/context/pre-commit-dbt-hooks.md
+  - docs/context/pipeline-orchestration-comparison.md
+  - docs/context/data-lineage-implementation.md
 ---
 
 ## Key Insight

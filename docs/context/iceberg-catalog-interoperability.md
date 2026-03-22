@@ -6,6 +6,7 @@ related:
   - docs/context/open-table-formats.md
   - docs/context/iceberg-cross-platform-compatibility.md
   - docs/research/2026-03-22-open-table-formats.research.md
+  - docs/context/data-catalog-selection.md
 ---
 
 ## Key Insight

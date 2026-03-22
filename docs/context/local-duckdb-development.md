@@ -6,6 +6,7 @@ related:
   - docs/research/2026-03-22-development-workflow.research.md
   - docs/context/ci-cd-pipeline-design.md
   - docs/context/secrets-environment-management.md
+  - docs/context/pipeline-orchestration-comparison.md
 ---
 
 ## Key Insight

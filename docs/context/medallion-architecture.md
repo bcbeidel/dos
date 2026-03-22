@@ -4,6 +4,7 @@ description: When to use Bronze/Silver/Gold layering and when simpler alternativ
 type: context
 related:
   - docs/research/2026-03-21-pipeline-design-architecture.research.md
+  - docs/context/right-to-erasure-implementation.md
 ---
 
 ## Key Takeaway

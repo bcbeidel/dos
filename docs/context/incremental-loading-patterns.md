@@ -5,6 +5,7 @@ type: context
 related:
   - docs/research/2026-03-21-pipeline-design-architecture.research.md
   - docs/context/medallion-architecture.md
+  - docs/context/query-storage-cost-optimization.md
 ---
 
 ## Key Takeaway

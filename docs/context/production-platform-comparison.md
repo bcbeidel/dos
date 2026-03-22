@@ -5,6 +5,8 @@ type: context
 related:
   - docs/research/2026-03-22-production-platform-landscape.research.md
   - docs/context/platform-tooling-compatibility.md
+  - docs/context/platform-cost-optimization.md
+  - docs/context/finops-governance.md
 ---
 
 ## Key Insight
