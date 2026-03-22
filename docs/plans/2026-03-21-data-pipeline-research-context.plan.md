@@ -173,9 +173,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 18: Research — Data Platform Engineering
 
-- [ ] Run `/wos:research`: "How should data platform infrastructure be managed as code, and what are best practices for environment provisioning and compute management? Cover: Terraform for Databricks (workspace, cluster policies, metastore, permissions), Snowflake (warehouses, databases, roles, resource monitors), and ClickHouse; environment provisioning patterns for dev/staging/prod workspace separation; compute management patterns (Databricks job cluster vs. all-purpose cluster, Snowflake warehouse sizing and auto-suspend, ClickHouse cluster configuration); platform versioning and upgrade management. Exclude network/security configuration (covered separately)."
-- [ ] Verify: `ls docs/research/ | grep platform-engineering` returns a file
-- [ ] Commit: `chore: add data platform engineering research`
+- [x] Run `/wos:research`: "How should data platform infrastructure be managed as code, and what are best practices for environment provisioning and compute management? Cover: Terraform for Databricks (workspace, cluster policies, metastore, permissions), Snowflake (warehouses, databases, roles, resource monitors), and ClickHouse; environment provisioning patterns for dev/staging/prod workspace separation; compute management patterns (Databricks job cluster vs. all-purpose cluster, Snowflake warehouse sizing and auto-suspend, ClickHouse cluster configuration); platform versioning and upgrade management. Exclude network/security configuration (covered separately)." <!-- sha:b681010 -->
+- [x] Verify: `ls docs/research/ | grep platform-engineering` returns a file <!-- sha:b681010 -->
+- [x] Commit: `chore: add data platform engineering research` <!-- sha:b681010 -->
 
 ### Task 19: Research — Platform Security & Access Control
 
