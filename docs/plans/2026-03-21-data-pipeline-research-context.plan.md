@@ -338,10 +338,10 @@ For each area: produce multiple focused context files if sub-topics are distinct
 
 ### Task 47: Create directory index files
 
-- [ ] Create `docs/research/_index.md` listing all research files with their `name` and `description` fields
-- [ ] Create `docs/context/_index.md` listing all context files with their `name` and `description` fields
-- [ ] Verify: every file in each directory has an entry; all 23 characteristic areas represented in `docs/context/_index.md`
-- [ ] Commit: `docs: add research and context index files`
+- [x] Create `docs/research/_index.md` listing all research files with their `name` and `description` fields <!-- sha:53a4971 -->
+- [x] Create `docs/context/_index.md` listing all context files with their `name` and `description` fields <!-- sha:53a4971 -->
+- [x] Verify: every file in each directory has an entry; all 23 characteristic areas represented in `docs/context/_index.md` <!-- sha:53a4971 -->
+- [x] Commit: `docs: add research and context index files` <!-- sha:53a4971 -->
 
 ---
 
