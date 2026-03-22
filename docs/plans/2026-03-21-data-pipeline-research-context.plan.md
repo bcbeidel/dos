@@ -107,9 +107,9 @@ All 23 research tasks are independent and can be dispatched in parallel.
 
 ### Task 7: Research — Pipeline Orchestration
 
-- [ ] Run `/wos:research`: "How do Apache Airflow, Prefect, and Dagster compare for data pipeline orchestration, and what governs the choice between them? Cover: Airflow DAGs, dynamic task generation, sensors, backfill management; Prefect flows, deployments, work pools, caching; Dagster software-defined assets, partitions, asset lineage, Dagster Cloud; selection criteria and migration patterns between tools; dbt integration patterns (dbt-airflow, Dagster-dbt, Prefect-dbt); cross-pipeline dependency management and SLA monitoring."
-- [ ] Verify: `ls docs/research/ | grep orchestration` returns a file
-- [ ] Commit: `chore: add pipeline orchestration research`
+- [x] Run `/wos:research`: "How do Apache Airflow, Prefect, and Dagster compare for data pipeline orchestration, and what governs the choice between them? Cover: Airflow DAGs, dynamic task generation, sensors, backfill management; Prefect flows, deployments, work pools, caching; Dagster software-defined assets, partitions, asset lineage, Dagster Cloud; selection criteria and migration patterns between tools; dbt integration patterns (dbt-airflow, Dagster-dbt, Prefect-dbt); cross-pipeline dependency management and SLA monitoring." <!-- sha:91fb2a9 -->
+- [x] Verify: `ls docs/research/ | grep orchestration` returns a file <!-- sha:91fb2a9 -->
+- [x] Commit: `chore: add pipeline orchestration research` <!-- sha:91fb2a9 -->
 
 ### Task 8: Research — Operations & Reliability
 
