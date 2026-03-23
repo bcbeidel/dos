@@ -1,5 +1,5 @@
 ---
-name: dos:evaluate-source
+name: evaluate-source
 description: Assess a data source's technical characteristics before pipeline construction. Produces a Source Evaluation Scorecard with six-dimension scoring, profiling results, and ingestion recommendations.
 ---
 
