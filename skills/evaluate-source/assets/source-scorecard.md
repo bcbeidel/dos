@@ -62,18 +62,30 @@ last_modified: {{date}}
 
 **Anti-patterns detected:** {{list any: static PATs, shared credentials, secrets in code, no rotation}}
 
+## Datasets
+
+A single source may contain multiple datasets (e.g., tables in a database, endpoints in an API). List all datasets relevant to downstream data products. Each dataset gets its own profiling subsection below.
+
+| Dataset | Description | Estimated Rows | Update Frequency |
+|---------|-------------|:--------------:|-----------------|
+| {{dataset_name}} | {{what this dataset contains}} | {{count}} | {{frequency}} |
+
 ## Data Profiling Results
 
 **Profiling date:** {{date}}
 **Sample size:** {{row count and sampling method if not full dataset}}
 
-### Structure Profiling
+Repeat the profiling sections below for each dataset in this source. For sources with a single dataset, use one section.
+
+### Dataset: {{dataset_name}}
+
+#### Structure Profiling
 
 | Column | Inferred Type | Nullable | Field Length | Naming Convention |
 |--------|---------------|:--------:|-------------|-------------------|
 | {{column_name}} | {{type}} | {{yes/no}} | {{min-max}} | {{snake_case / camelCase / mixed}} |
 
-### Content Profiling
+#### Content Profiling
 
 | Column | Null Count | Null Rate | Distinct Count | Uniqueness Ratio | Min | Max |
 |--------|:----------:|:---------:|:--------------:|:----------------:|-----|-----|
@@ -81,7 +93,7 @@ last_modified: {{date}}
 
 **Distribution notes:** {{any notable patterns, outliers, or skew}}
 
-### Relationship Profiling
+#### Relationship Profiling
 
 | Relationship | Type | Status |
 |-------------|------|--------|
@@ -90,7 +102,7 @@ last_modified: {{date}}
 **Key candidates:** {{columns that could serve as primary keys based on uniqueness ratio}}
 **Referential integrity:** {{assessment if multi-table source}}
 
-### Quality Dimension Baselines
+#### Quality Dimension Baselines
 
 | Quality Dimension | Baseline Value | Derived From |
 |-------------------|---------------|--------------|

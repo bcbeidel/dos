@@ -70,29 +70,36 @@ Directory names omit the `dos-` prefix because the plugin system (`plugin.json` 
 
 ### Artifact Conventions
 
-Artifacts live in `docs/data-products/<name>/` and follow this structure:
+Sources and data products are distinct entities with independent lifecycles. Source evaluations live in `docs/sources/` and are reusable across data products. Data product artifacts live in `docs/data-products/` and reference sources.
 
 ```
-docs/data-products/
-  orders/
-    source-evaluation.md      # From dos:evaluate-source
-    scope.md                  # From dos:scope-data-product
-    contract.md               # From dos:define-contract (ODCS-aligned)
-    quality-config.md         # From dos:assess-quality
-    pipeline-architecture.md  # From dos:design-pipeline
-    reviews/                  # From dos:review-pipeline (append-only)
-      2026-03-23-review.md
+docs/
+  sources/                          # Independent source evaluations
+    postgres-orders-db/
+      evaluation.md                 # From dos:evaluate-source (one per source)
+    stripe-api/
+      evaluation.md
+  data-products/                    # Data product specifications
+    orders/
+      scope.md                      # From dos:scope-data-product (references sources)
+      contract.md                   # From dos:define-contract (ODCS-aligned)
+      quality-config.md             # From dos:assess-quality
+      pipeline-architecture.md      # From dos:design-pipeline
+      reviews/                      # From dos:review-pipeline (append-only)
+        2026-03-23-review.md
 ```
+
+A source evaluation assesses a source system's characteristics — connectivity, auth, schema stability, per-dataset profiling. A data product's scope document declares which sources it consumes. This is a many-to-many relationship: one source can feed multiple data products, and one data product can consume multiple sources.
 
 Every artifact includes YAML frontmatter with:
 
 ```yaml
 ---
-name: orders
-artifact_type: source-evaluation  # | scope | contract | quality-config | pipeline-architecture
+name: postgres-orders-db           # Source name (sources) or product name (data products)
+artifact_type: source-evaluation   # | scope | contract | quality-config | pipeline-architecture
 version: 1.0.0
 owner: analytics-engineering
-status: active  # | draft | deprecated
+status: active                     # | draft | deprecated
 last_modified: 2026-03-23
 ---
 ```
@@ -170,7 +177,7 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 **Phase:** Discover
 **Purpose:** Assess a data source's technical characteristics before pipeline construction.
-**Output:** Source Evaluation Scorecard (`docs/data-products/<name>/source-evaluation.md`)
+**Output:** Source Evaluation Scorecard (`docs/sources/<source-name>/evaluation.md`)
 
 **Workflow:**
 
@@ -521,19 +528,19 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 ## Artifact Chaining
 
-Skills produce artifacts that downstream skills consume. Each skill checks for prior artifacts at startup and adjusts its workflow:
+Skills produce artifacts that downstream skills consume. Each skill checks for prior artifacts at startup and adjusts its workflow. Source evaluations live in `docs/sources/` and are independent of data products. All other artifacts live in `docs/data-products/<name>/`. The scope document is the join point — it declares which sources a data product consumes.
 
-| Skill | Produces | Consumed By |
-|---|---|---|
-| `dos:evaluate-source` | Source Evaluation Scorecard | scope-data-product, implement-source, design-pipeline |
-| `dos:scope-data-product` | Data Product Scope Document | select-model, define-contract, assess-quality, design-pipeline, implement-models |
-| `dos:select-model` | Advisory (updates scope) | implement-models |
-| `dos:define-contract` | Contract | implement-models, assess-quality, review-pipeline |
-| `dos:assess-quality` | Quality Config | implement-models, review-pipeline |
-| `dos:design-pipeline` | Pipeline Architecture | implement-source, implement-models, review-pipeline |
-| `dos:implement-source` | Code (dlt + dbt source) | review-pipeline |
-| `dos:implement-models` | Code (dbt models + tests) | review-pipeline |
-| `dos:review-pipeline` | Review Checklist | (terminal — informs next iteration) |
+| Skill | Produces | Location | Consumed By |
+|---|---|---|---|
+| `dos:evaluate-source` | Source Evaluation Scorecard | `docs/sources/<source>/` | scope-data-product, implement-source, design-pipeline |
+| `dos:scope-data-product` | Data Product Scope Document | `docs/data-products/<name>/` | select-model, define-contract, assess-quality, design-pipeline, implement-models |
+| `dos:select-model` | Advisory (updates scope) | `docs/data-products/<name>/` | implement-models |
+| `dos:define-contract` | Contract | `docs/data-products/<name>/` | implement-models, assess-quality, review-pipeline |
+| `dos:assess-quality` | Quality Config | `docs/data-products/<name>/` | implement-models, review-pipeline |
+| `dos:design-pipeline` | Pipeline Architecture | `docs/data-products/<name>/` | implement-source, implement-models, review-pipeline |
+| `dos:implement-source` | Code (dlt + dbt source) | project codebase | review-pipeline |
+| `dos:implement-models` | Code (dbt models + tests) | project codebase | review-pipeline |
+| `dos:review-pipeline` | Review Checklist | `docs/data-products/<name>/reviews/` | (terminal — informs next iteration) |
 
 Every artifact template ends with a "Next Steps" section suggesting downstream skills, guiding the user through the natural workflow chain.
 

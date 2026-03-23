@@ -11,9 +11,9 @@ Assess a data source's technical characteristics before pipeline construction. W
 
 Before starting, establish context:
 
-1. **Which data product?** Ask the user for a data product name. This determines the artifact path: `docs/data-products/<name>/source-evaluation.md`.
-2. **Check for existing artifact.** If `docs/data-products/<name>/source-evaluation.md` exists, read it, summarize the current state, and ask what's changing. Update the existing artifact rather than creating a new one.
-3. **Check for upstream artifacts.** If other artifacts exist in `docs/data-products/<name>/` (scope, contract, etc.), note them — they may provide context but are not required.
+1. **Which source?** Ask the user for a source name (e.g., `postgres-orders-db`, `stripe-api`). This determines the artifact path: `docs/sources/<source-name>/evaluation.md`. Sources are independent of data products — a source evaluation is reusable across multiple data products.
+2. **Check for existing artifact.** If `docs/sources/<source-name>/evaluation.md` exists, read it, summarize the current state, and ask what's changing. Update the existing artifact rather than creating a new one.
+3. **Check for related sources.** If other source evaluations exist in `docs/sources/`, note them — the user may be evaluating a related source for the same data product.
 
 If the artifact exists, adjust the workflow: skip sections that haven't changed, focus on what the user wants to update, and bump the version in frontmatter.
 
@@ -142,7 +142,7 @@ Note the baseline profiling date and next scheduled profiling date. Profiling is
 
 Produce the Source Evaluation Scorecard artifact using the template structure from [source-scorecard.md](assets/source-scorecard.md).
 
-Save to `docs/data-products/<name>/source-evaluation.md` with:
+Save to `docs/sources/<source-name>/evaluation.md` with:
 - Complete YAML frontmatter (name, artifact_type, version, owner, status, last_modified)
 - All sections populated from the workflow above
 - Changelog entry recording the evaluation
