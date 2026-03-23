@@ -2,7 +2,7 @@
 name: Foundation + dos:evaluate-source
 description: Scaffold the skill architecture and implement the first skill end-to-end, validating directory conventions, SKILL.md constraints, reference curation, artifact templates, and the scripts/ pattern.
 type: plan
-status: executing
+status: completed
 related:
   - docs/designs/2026-03-23-dos-skill-library-design.md
 ---
@@ -176,15 +176,15 @@ Won't have:
 
 ## Validation
 
-- [ ] `wc -l skills/dos-evaluate-source/SKILL.md` — under 500 lines
-- [ ] `ls skills/dos-evaluate-source/references/` — shows 4 reference files (six-dimension-framework.md, source-classification-matrix.md, access-auth-patterns.md, profiling-metrics.md)
-- [ ] `ls skills/dos-evaluate-source/assets/` — shows source-scorecard.md
-- [ ] `python3 skills/dos-evaluate-source/scripts/profile-sample.py --help` — exits 0
-- [ ] `head -10 skills/dos-evaluate-source/SKILL.md` — shows Agent Skills spec frontmatter with `name` and `description`
-- [ ] `grep "dos:scope-data-product" skills/dos-evaluate-source/SKILL.md` — "Next Steps" references the downstream skill
-- [ ] `test -f docs/data-products/_index.md` — artifact directory conventions exist
-- [ ] `grep "evaluate-source" README.md` — skill listed in project README
-- [ ] All files created follow the project's markdown conventions (YAML frontmatter, key insights first)
+- [x] `wc -l skills/evaluate-source/SKILL.md` — 162 lines, under 500
+- [x] `ls skills/evaluate-source/references/` — 4 reference files present
+- [x] `ls skills/evaluate-source/assets/` — source-scorecard.md present
+- [x] `python3 skills/evaluate-source/scripts/profile-sample.py --help` — exits 0
+- [x] `head -10 skills/evaluate-source/SKILL.md` — Agent Skills spec frontmatter with `name` and `description`
+- [x] `grep "dos:scope-data-product" skills/evaluate-source/SKILL.md` — Next Steps references downstream skill
+- [x] `test -f docs/data-products/_index.md` — artifact directory conventions exist
+- [x] `grep "evaluate-source" README.md` — skill listed in project README
+- [x] All files created follow the project's markdown conventions (YAML frontmatter, key insights first) — human-confirmed
 
 ## Notes
 
