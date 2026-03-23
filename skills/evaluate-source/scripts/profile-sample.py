@@ -149,8 +149,55 @@ def compute_metrics(rows: list[dict], columns: list[str]) -> dict:
             except TypeError:
                 pass
 
+        # Numeric distribution metrics
+        numeric_stats = None
+        col_type = infer_type(values)
+        if col_type in ("integer", "float"):
+            nums = []
+            for v in non_null:
+                try:
+                    nums.append(float(v))
+                except (ValueError, TypeError):
+                    pass
+            if nums:
+                nums_sorted = sorted(nums)
+                n = len(nums_sorted)
+                mean = sum(nums_sorted) / n
+                variance = sum((x - mean) ** 2 for x in nums_sorted) / n
+                stddev = variance ** 0.5
+
+                def percentile(data: list[float], p: float) -> float:
+                    k = (len(data) - 1) * (p / 100)
+                    f = int(k)
+                    c = f + 1 if f + 1 < len(data) else f
+                    d = k - f
+                    return data[f] + d * (data[c] - data[f])
+
+                p25 = percentile(nums_sorted, 25)
+                p50 = percentile(nums_sorted, 50)
+                p75 = percentile(nums_sorted, 75)
+                iqr = p75 - p25
+
+                # Skewness (Fisher-Pearson)
+                skewness = None
+                if n >= 3 and stddev > 0:
+                    skewness = (
+                        sum((x - mean) ** 3 for x in nums_sorted)
+                        / (n * stddev ** 3)
+                    )
+
+                numeric_stats = {
+                    "mean": mean,
+                    "stddev": stddev,
+                    "p25": p25,
+                    "median": p50,
+                    "p75": p75,
+                    "iqr": iqr,
+                    "skewness": skewness,
+                }
+
         metrics[col] = {
-            "inferred_type": infer_type(values),
+            "inferred_type": col_type,
             "nullable": null_count > 0,
             "null_count": null_count,
             "null_rate": f"{null_count / total:.1%}" if total > 0 else "N/A",
@@ -160,6 +207,7 @@ def compute_metrics(rows: list[dict], columns: list[str]) -> dict:
             ),
             "min": min_val,
             "max": max_val,
+            "numeric_stats": numeric_stats,
         }
 
     return metrics
@@ -215,6 +263,27 @@ def print_report(rows: list[dict], columns: list[str], file_path: str) -> None:
             f"| {format_value(m['min'])} | {format_value(m['max'])} |"
         )
     print()
+
+    # Numeric distribution
+    numeric_cols = [c for c in columns if metrics[c]["numeric_stats"] is not None]
+    if numeric_cols:
+        print("## Numeric Distribution\n")
+        print(
+            "| Column | Mean | Std Dev | P25 | Median | P75 | IQR | Skewness |"
+        )
+        print(
+            "|--------|-----:|--------:|----:|-------:|----:|----:|---------:|"
+        )
+        for col in numeric_cols:
+            s = metrics[col]["numeric_stats"]
+            skew = format_value(s["skewness"]) if s["skewness"] is not None else "N/A"
+            print(
+                f"| `{col}` | {format_value(s['mean'])} | {format_value(s['stddev'])} "
+                f"| {format_value(s['p25'])} | {format_value(s['median'])} "
+                f"| {format_value(s['p75'])} | {format_value(s['iqr'])} "
+                f"| {skew} |"
+            )
+        print()
 
     # Key candidates
     print("## Key Candidates\n")

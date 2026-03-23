@@ -91,6 +91,14 @@ Repeat the profiling sections below for each dataset in this source. For sources
 |--------|:----------:|:---------:|:--------------:|:----------------:|-----|-----|
 | {{column_name}} | {{count}} | {{pct}} | {{count}} | {{ratio}} | {{min}} | {{max}} |
 
+#### Numeric Distribution
+
+For numeric columns only. Skewness indicates distribution shape: 0 = symmetric, positive = right-skewed (long tail of high values), negative = left-skewed.
+
+| Column | Mean | Std Dev | P25 | Median | P75 | IQR | Skewness |
+|--------|-----:|--------:|----:|-------:|----:|----:|---------:|
+| {{column_name}} | {{mean}} | {{stddev}} | {{p25}} | {{median}} | {{p75}} | {{iqr}} | {{skewness}} |
+
 **Distribution notes:** {{any notable patterns, outliers, or skew}}
 
 #### Relationship Profiling
