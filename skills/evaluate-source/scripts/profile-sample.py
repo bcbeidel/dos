@@ -196,6 +196,23 @@ def compute_metrics(rows: list[dict], columns: list[str]) -> dict:
                     "skewness": skewness,
                 }
 
+        # Value frequencies for low-cardinality (categorical) columns
+        # Categorical if: low uniqueness ratio AND not a unique identifier
+        top_values = None
+        uniqueness = distinct_count / total if total > 0 else 1
+        is_categorical = (
+            distinct_count > 0
+            and uniqueness < 0.5
+            and distinct_count <= 50
+        )
+        if is_categorical:
+            freq: dict[str, int] = {}
+            for v in non_null:
+                key = str(v)
+                freq[key] = freq.get(key, 0) + 1
+            sorted_freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
+            top_values = sorted_freq[:10]  # Top 10 values
+
         metrics[col] = {
             "inferred_type": col_type,
             "nullable": null_count > 0,
@@ -208,6 +225,8 @@ def compute_metrics(rows: list[dict], columns: list[str]) -> dict:
             "min": min_val,
             "max": max_val,
             "numeric_stats": numeric_stats,
+            "is_categorical": is_categorical,
+            "top_values": top_values,
         }
 
     return metrics
@@ -284,6 +303,24 @@ def print_report(rows: list[dict], columns: list[str], file_path: str) -> None:
                 f"| {skew} |"
             )
         print()
+
+    # Categorical analysis
+    cat_cols = [c for c in columns if metrics[c]["is_categorical"]]
+    if cat_cols:
+        print("## Categorical Analysis\n")
+        print(
+            "Low-cardinality columns (<50% uniqueness ratio). "
+            "Top values by frequency:\n"
+        )
+        for col in cat_cols:
+            m = metrics[col]
+            print(f"### `{col}` — {m['distinct_count']} distinct values\n")
+            print("| Value | Count | Frequency |")
+            print("|-------|------:|----------:|")
+            for val, count in m["top_values"]:
+                freq_pct = f"{count / total:.1%}" if total > 0 else "N/A"
+                print(f"| {val} | {count:,} | {freq_pct} |")
+            print()
 
     # Key candidates
     print("## Key Candidates\n")

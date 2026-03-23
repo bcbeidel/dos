@@ -102,7 +102,7 @@ Refer to [profiling-metrics.md](references/profiling-metrics.md) for the three p
 Profile across all three types:
 
 1. **Structure profiling** — column names, types, field lengths, naming consistency
-2. **Content profiling** — null rates, distinct counts, uniqueness ratios, min/max, distributions, pattern frequencies
+2. **Content profiling** — null rates, distinct counts, uniqueness ratios, min/max, numeric distribution (mean, stddev, percentiles, IQR, skewness), pattern frequencies
 3. **Relationship profiling** — key candidates, referential integrity, orphan detection (if multi-table)
 
 Map profiling results to quality dimension baselines:

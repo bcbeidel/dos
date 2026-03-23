@@ -195,7 +195,7 @@ Each skill is independently usable. When chained, downstream skills consume upst
 6. Assess credential management — where secrets live, rotation cadence, anti-patterns (static PATs, shared credentials)
 7. Profile sample data if provided:
    - Structure profiling — column names, types, field lengths, naming consistency
-   - Content profiling — null rates, distinct counts, uniqueness ratios, min/max, distributions, pattern frequencies
+   - Content profiling — null rates, distinct counts, uniqueness ratios, min/max, numeric distribution (mean, stddev, percentiles, IQR, skewness), pattern frequencies
    - Relationship profiling — key candidates, referential integrity, orphan detection (if multi-table)
    - Map profiling results to quality dimension baselines
 8. Recommend ingestion approach (full load, incremental, CDC) based on classification and dimension scores. Note: dlt is a polling tool, not CDC — if log-based CDC is needed, recommend Debezium or platform-native CDC.
@@ -215,7 +215,7 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 | Script | Purpose |
 |---|---|
-| `profile-sample.py` | Accepts CSV/JSON/Parquet, computes core profiling metrics, outputs structured markdown tables. Lightweight — Python stdlib + DuckDB. |
+| `profile-sample.py` | Accepts CSV/JSON/Parquet, computes core profiling metrics (completeness, uniqueness, numeric distribution, key candidates), outputs structured markdown tables. Lightweight — Python stdlib + DuckDB. |
 
 ---
 

@@ -101,6 +101,20 @@ For numeric columns only. Skewness indicates distribution shape: 0 = symmetric, 
 
 **Distribution notes:** {{any notable patterns, outliers, or skew}}
 
+#### Categorical Analysis
+
+Low-cardinality columns (<50% uniqueness ratio) with value frequencies. Useful for understanding enum-like fields, status codes, and category distributions.
+
+| Column | Distinct Values | Top Value | Top Frequency |
+|--------|:--------------:|-----------|:-------------:|
+| {{column_name}} | {{count}} | {{value}} | {{pct}} |
+
+{{For each categorical column, include a value frequency table:}}
+
+| Value | Count | Frequency |
+|-------|------:|----------:|
+| {{value}} | {{count}} | {{pct}} |
+
 #### Relationship Profiling
 
 | Relationship | Type | Status |
