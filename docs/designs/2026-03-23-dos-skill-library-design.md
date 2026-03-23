@@ -47,7 +47,7 @@ Each skill embeds the decision frameworks, criteria, and guidance it needs — d
 
 ```
 skills/
-  dos-evaluate-source/
+  evaluate-source/          # Invoked as /dos:evaluate-source (plugin adds namespace)
     SKILL.md                # <500 lines, portable Agent Skills spec
     references/             # Curated knowledge, loaded on demand via relative links
       six-dimension-framework.md
@@ -57,6 +57,8 @@ skills/
     scripts/                # Deterministic validation (shell/python scripts)
       profile-sample.py
 ```
+
+Directory names omit the `dos-` prefix because the plugin system (`plugin.json` `name: "dos"`) automatically namespaces skills as `dos:<directory-name>`. The SKILL.md `name` field uses lowercase letters, numbers, and hyphens only (no colons) per the Agent Skills spec.
 
 ### SKILL.md Conventions
 
