@@ -223,12 +223,12 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 **Phase:** Scope
 **Purpose:** Define what a data product needs to be, driven by consumption intent.
-**Input:** Source Evaluation Scorecard (optional — pre-populates known facts)
+**Input:** Source Evaluation Scorecards from `docs/sources/` (optional — pre-populates known facts for one or more sources)
 **Output:** Data Product Scope Document (`docs/data-products/<name>/scope.md`)
 
 **Workflow:**
 
-1. If source scorecard exists, load it. Pre-populate source classification, profiling baselines, ingestion recommendation. Skip questions already answered.
+1. If source scorecards exist in `docs/sources/`, ask which sources this data product will consume. Load each referenced scorecard. Pre-populate source classifications, profiling baselines, ingestion recommendations. A data product may consume multiple sources — the scope document records which sources and datasets are in play.
 2. Walk through the Data Product Canvas blocks in consumption-first order: Consumers/Use Cases → Data Contract → Sources → Architecture → Domain → Ubiquitous Language → Classification. Start from what consumers need, work backward to what sources provide.
 3. Interrogate intended use cases — "What decisions will be made with this data?" Supplement stated requirements with empirical evidence: review actual dashboards, SQL queries, or query logs (BigQuery INFORMATION_SCHEMA.JOBS, Snowflake QUERY_HISTORY) to understand how data is actually consumed vs. how stakeholders say it is consumed.
 4. Identify consumers and their query patterns (join-heavy, scan-heavy, entity lookup, ad-hoc)
@@ -360,13 +360,13 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 **Phase:** Design
 **Purpose:** Architecture a data pipeline from source to serving layer.
-**Input:** Source Evaluation Scorecard and/or Data Product Scope Document (optional)
+**Input:** Source Evaluation Scorecards from `docs/sources/` and/or Data Product Scope Document (optional)
 **Output:** Pipeline architecture document (`docs/data-products/<name>/pipeline-architecture.md`)
 
 **Workflow:**
 
 1. If pipeline architecture exists, read it, ask what's changing.
-2. If scorecard or scope exist, pre-populate source classification, ingestion approach, freshness requirements, SLA tier.
+2. If scope exists, identify referenced sources and load their scorecards from `docs/sources/`. Pre-populate source classifications, ingestion approaches, freshness requirements, SLA tier. If no scope exists but scorecards are available, ask which sources to design for.
 3. Gather any missing consumption requirements: query shape, freshness, SLA tier.
 4. Apply consumption-driven heuristics to derive architecture decisions.
 5. Select layering strategy:
@@ -399,12 +399,12 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 **Phase:** Build (EL)
 **Purpose:** Generate dlt pipeline code and dbt source definitions from data product artifacts.
-**Input:** Source Evaluation Scorecard (required), pipeline architecture (optional), contract (optional)
+**Input:** Source Evaluation Scorecard from `docs/sources/<source>/` (required), pipeline architecture (optional), contract (optional)
 **Output:** dlt pipeline code + dbt source YAML in the project codebase
 
 **Workflow:**
 
-1. Read source evaluation scorecard — extract source type, classification, auth mechanism, ingestion approach.
+1. Ask which source to implement. Read its evaluation scorecard from `docs/sources/<source>/evaluation.md` — extract source type, classification, auth mechanism, ingestion approach. This skill implements one source at a time; run it multiple times for data products with multiple sources.
 2. If pipeline architecture exists, extract layering strategy and incremental pattern.
 3. If contract exists, extract schema for source definition columns.
 4. Validate ingestion approach against tooling capability. dlt is a polling/extraction tool, NOT CDC — it does not read transaction logs. If the scorecard recommends CDC (log-based change capture for high-frequency transactional sources), guide the user to Debezium or platform-native CDC instead of dlt. dlt is appropriate for API extraction, file-based sources, and database polling with cursor-based incremental loading.

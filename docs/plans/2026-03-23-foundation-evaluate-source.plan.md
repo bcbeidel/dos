@@ -14,11 +14,11 @@ related:
 **Scope:**
 
 Must have:
-- `skills/dos-evaluate-source/SKILL.md` under 500 lines, following Agent Skills spec with Claude Code extensions
-- `skills/dos-evaluate-source/references/` with 4 curated reference files distilled from context corpus
-- `skills/dos-evaluate-source/assets/source-scorecard.md` artifact template
-- `skills/dos-evaluate-source/scripts/profile-sample.py` profiling script
-- `docs/data-products/` directory with conventions documented
+- `skills/evaluate-source/SKILL.md` under 500 lines, following Agent Skills spec with Claude Code extensions
+- `skills/evaluate-source/references/` with 4 curated reference files distilled from context corpus
+- `skills/evaluate-source/assets/source-scorecard.md` artifact template
+- `skills/evaluate-source/scripts/profile-sample.py` profiling script
+- `docs/sources/` and `docs/data-products/` directories with conventions documented
 - Skill invocable as `/dos:evaluate-source` via the plugin
 - Artifact output matches the design's frontmatter and changelog conventions
 
@@ -33,14 +33,15 @@ Won't have:
 
 **File Changes:**
 
-- Create: `docs/data-products/_index.md` (artifact directory conventions)
-- Create: `skills/dos-evaluate-source/assets/source-scorecard.md` (artifact template)
-- Create: `skills/dos-evaluate-source/references/six-dimension-framework.md`
-- Create: `skills/dos-evaluate-source/references/source-classification-matrix.md`
-- Create: `skills/dos-evaluate-source/references/access-auth-patterns.md`
-- Create: `skills/dos-evaluate-source/references/profiling-metrics.md`
-- Create: `skills/dos-evaluate-source/scripts/profile-sample.py`
-- Create: `skills/dos-evaluate-source/SKILL.md`
+- Create: `docs/data-products/_index.md` (data product artifact conventions)
+- Create: `docs/sources/_index.md` (source evaluation conventions)
+- Create: `skills/evaluate-source/assets/source-scorecard.md` (artifact template)
+- Create: `skills/evaluate-source/references/six-dimension-framework.md`
+- Create: `skills/evaluate-source/references/source-classification-matrix.md`
+- Create: `skills/evaluate-source/references/access-auth-patterns.md`
+- Create: `skills/evaluate-source/references/profiling-metrics.md`
+- Create: `skills/evaluate-source/scripts/profile-sample.py`
+- Create: `skills/evaluate-source/SKILL.md`
 - Modify: `docs/plans/_index.md` (add this plan)
 - Modify: `README.md` (add evaluate-source to skills table)
 
@@ -65,11 +66,11 @@ Won't have:
 ### Task 2: Source scorecard artifact template
 
 **Files:**
-- Create: `skills/dos-evaluate-source/assets/source-scorecard.md`
+- Create: `skills/evaluate-source/assets/source-scorecard.md`
 
 **Depends on:** Task 1
 
-- [x] **Step 1:** Create the source scorecard template in `skills/dos-evaluate-source/assets/source-scorecard.md`. The template must include: YAML frontmatter (with all required artifact fields), sections for source metadata (type, ownership, format, location), source classification, six-dimension scoring table (connectivity, volume, freshness, schema stability, data quality, access complexity), authentication mechanism, credential management assessment, profiling results (structure, content, relationship subsections), ingestion recommendation, re-profiling cadence, and a "Next Steps" section pointing to `dos:scope-data-product`. Use placeholder values (e.g., `{{name}}`, `[score: 1-5]`) where skills will fill in data. <!-- sha:0794f7e -->
+- [x] **Step 1:** Create the source scorecard template in `skills/evaluate-source/assets/source-scorecard.md`. The template must include: YAML frontmatter (with all required artifact fields), sections for source metadata (type, ownership, format, location), source classification, six-dimension scoring table (connectivity, volume, freshness, schema stability, data quality, access complexity), authentication mechanism, credential management assessment, profiling results (structure, content, relationship subsections), ingestion recommendation, re-profiling cadence, and a "Next Steps" section pointing to `dos:scope-data-product`. Use placeholder values (e.g., `{{name}}`, `[score: 1-5]`) where skills will fill in data. <!-- sha:0794f7e -->
 - [x] **Step 2:** Verify: the template contains all sections from the design's evaluate-source workflow (steps 2-10). Check for: six-dimension scoring table, profiling subsections (structure, content, relationship), ingestion recommendation, and "Next Steps" mentioning `dos:scope-data-product`. <!-- sha:0794f7e -->
 - [x] **Step 3:** Commit: "feat: add source scorecard artifact template" <!-- sha:0794f7e -->
 
@@ -80,10 +81,10 @@ Won't have:
 ### Task 3: Six-dimension framework reference
 
 **Files:**
-- Create: `skills/dos-evaluate-source/references/six-dimension-framework.md`
+- Create: `skills/evaluate-source/references/six-dimension-framework.md`
 
 - [x] **Step 1:** Read `docs/context/source-system-evaluation.md` and `docs/context/schema-drift-risk.md`. Extract the six-dimension assessment framework (connectivity, volume, freshness, schema stability, data quality, access complexity) into a focused reference file. Include: dimension definitions, scoring criteria (what makes a 1 vs 5), and the key finding that schema drift causes 7.8% of quality incidents with 27% compounding. Format as tables and criteria lists — no explanatory prose. Target under 200 lines. <!-- sha:04715af -->
-- [x] **Step 2:** Verify: `wc -l skills/dos-evaluate-source/references/six-dimension-framework.md` — under 200 lines (actual: 97 lines). File contains a scoring table with all six dimensions. <!-- sha:04715af -->
+- [x] **Step 2:** Verify: `wc -l skills/evaluate-source/references/six-dimension-framework.md` — under 200 lines (actual: 97 lines). File contains a scoring table with all six dimensions. <!-- sha:04715af -->
 - [x] **Step 3:** Commit: "feat: add six-dimension framework reference for evaluate-source" <!-- sha:04715af -->
 
 ---
@@ -91,10 +92,10 @@ Won't have:
 ### Task 4: Source classification matrix reference
 
 **Files:**
-- Create: `skills/dos-evaluate-source/references/source-classification-matrix.md`
+- Create: `skills/evaluate-source/references/source-classification-matrix.md`
 
 - [x] **Step 1:** Read `docs/context/source-system-evaluation.md` and `docs/context/incremental-loading-patterns.md`. Extract the source classification matrix (transactional DB, event stream, SaaS API, file-based) and map each type to: typical ingestion approaches, incremental strategy fit, and silent failure modes. Include the key finding that dlt is a polling tool (not CDC) — if log-based CDC is needed, recommend Debezium. Format as a decision matrix table. Target under 150 lines. <!-- sha:b7d7650 -->
-- [x] **Step 2:** Verify: `wc -l skills/dos-evaluate-source/references/source-classification-matrix.md` — under 150 lines (actual: 59 lines). File contains a classification table with at least 4 source types. <!-- sha:b7d7650 -->
+- [x] **Step 2:** Verify: `wc -l skills/evaluate-source/references/source-classification-matrix.md` — under 150 lines (actual: 59 lines). File contains a classification table with at least 4 source types. <!-- sha:b7d7650 -->
 - [x] **Step 3:** Commit: "feat: add source classification matrix reference for evaluate-source" <!-- sha:b7d7650 -->
 
 ---
@@ -102,10 +103,10 @@ Won't have:
 ### Task 5: Access and auth patterns reference
 
 **Files:**
-- Create: `skills/dos-evaluate-source/references/access-auth-patterns.md`
+- Create: `skills/evaluate-source/references/access-auth-patterns.md`
 
 - [x] **Step 1:** Read `docs/context/secrets-management-rotation.md` and `docs/context/secrets-environment-management.md`. Extract authentication mechanism inventory (OAuth M2M, API key, service account, key-pair, JDBC credentials), credential management anti-patterns (static PATs, shared credentials), and rotation cadence guidance. Include the key finding that service principals with OAuth M2M (1h tokens) are the production auth standard. Format as a checklist and comparison table. Target under 150 lines. <!-- sha:b7425d4 -->
-- [x] **Step 2:** Verify: `wc -l skills/dos-evaluate-source/references/access-auth-patterns.md` — under 150 lines (actual: 55 lines). File lists at least 5 auth mechanisms. <!-- sha:b7425d4 -->
+- [x] **Step 2:** Verify: `wc -l skills/evaluate-source/references/access-auth-patterns.md` — under 150 lines (actual: 55 lines). File lists at least 5 auth mechanisms. <!-- sha:b7425d4 -->
 - [x] **Step 3:** Commit: "feat: add access and auth patterns reference for evaluate-source" <!-- sha:b7425d4 -->
 
 ---
@@ -113,10 +114,10 @@ Won't have:
 ### Task 6: Profiling metrics reference
 
 **Files:**
-- Create: `skills/dos-evaluate-source/references/profiling-metrics.md`
+- Create: `skills/evaluate-source/references/profiling-metrics.md`
 
 - [x] **Step 1:** Read `docs/context/data-profiling.md`. Extract the three profiling types (structure, content, relationship) with their specific metrics: structure (column names, types, field lengths, naming consistency), content (null rates, distinct counts, uniqueness ratios, min/max, distributions, pattern frequencies), relationship (key candidates, referential integrity, orphan detection). Include mapping from profiling results to quality dimension baselines. Format as structured metric lists per profiling type. Target under 150 lines. <!-- sha:8f5c7a5 -->
-- [x] **Step 2:** Verify: `wc -l skills/dos-evaluate-source/references/profiling-metrics.md` — under 150 lines (actual: 72 lines). File contains all three profiling types with their metrics listed. <!-- sha:8f5c7a5 -->
+- [x] **Step 2:** Verify: `wc -l skills/evaluate-source/references/profiling-metrics.md` — under 150 lines (actual: 72 lines). File contains all three profiling types with their metrics listed. <!-- sha:8f5c7a5 -->
 - [x] **Step 3:** Commit: "feat: add profiling metrics reference for evaluate-source" <!-- sha:8f5c7a5 -->
 
 ---
@@ -126,10 +127,10 @@ Won't have:
 ### Task 7: Sample profiling script
 
 **Files:**
-- Create: `skills/dos-evaluate-source/scripts/profile-sample.py`
+- Create: `skills/evaluate-source/scripts/profile-sample.py`
 
 - [x] **Step 1:** Create `profile-sample.py` that accepts a file path (CSV, JSON, or Parquet) via command-line argument and computes core profiling metrics. Use Python stdlib for CSV/JSON and DuckDB for Parquet and heavier computation. Output structured markdown tables covering: column inventory (name, inferred type, nullable), content metrics per column (null count, null rate, distinct count, uniqueness ratio, min, max), and summary statistics (row count, column count). The script should exit 0 on success and print to stdout. Include a `--help` flag documenting usage. <!-- sha:f89e230 -->
-- [x] **Step 2:** Verify: `python3 skills/dos-evaluate-source/scripts/profile-sample.py --help` — exits 0 and prints usage information. <!-- sha:f89e230 -->
+- [x] **Step 2:** Verify: `python3 skills/evaluate-source/scripts/profile-sample.py --help` — exits 0 and prints usage information. <!-- sha:f89e230 -->
 - [x] **Step 3:** Create a small test CSV and verify — outputs markdown tables with column metrics showing null rates (33.3%) for `name` and `value` columns, identifies `id` as key candidate. <!-- sha:f89e230 -->
 - [x] **Step 4:** Commit: "feat: add sample profiling script for evaluate-source" <!-- sha:f89e230 -->
 
@@ -140,12 +141,12 @@ Won't have:
 ### Task 8: SKILL.md for dos:evaluate-source
 
 **Files:**
-- Create: `skills/dos-evaluate-source/SKILL.md`
+- Create: `skills/evaluate-source/SKILL.md`
 
 **Depends on:** Tasks 2, 3, 4, 5, 6, 7
 
-- [x] **Step 1:** Write `skills/dos-evaluate-source/SKILL.md` implementing the full evaluate-source workflow from the design (steps 1-10). The file must: use only base Agent Skills spec fields in frontmatter (`name`, `description`) for portability; start with a preamble check (ask which data product, check for existing artifacts in `docs/data-products/<name>/`); reference the 4 curated files via relative markdown links for progressive disclosure; reference the asset template for output structure; reference the profiling script for sample data analysis; end output with "Next Steps" suggesting `dos:scope-data-product`. Follow the 10-step workflow exactly as specified in the design. <!-- sha:0210462 -->
-- [x] **Step 2:** Verify: `wc -l skills/dos-evaluate-source/SKILL.md` — 162 lines, well under 500-line budget (338 lines headroom). <!-- sha:0210462 -->
+- [x] **Step 1:** Write `skills/evaluate-source/SKILL.md` implementing the full evaluate-source workflow from the design (steps 1-10). The file must: use only base Agent Skills spec fields in frontmatter (`name`, `description`) for portability; start with a preamble check (ask which source, check for existing artifacts in `docs/sources/<source-name>/`); reference the 4 curated files via relative markdown links for progressive disclosure; reference the asset template for output structure; reference the profiling script for sample data analysis; end output with "Next Steps" suggesting `dos:scope-data-product`. Follow the 10-step workflow exactly as specified in the design. <!-- sha:0210462 -->
+- [x] **Step 2:** Verify: `wc -l skills/evaluate-source/SKILL.md` — 162 lines, well under 500-line budget (338 lines headroom). <!-- sha:0210462 -->
 - [x] **Step 3:** Verify content: SKILL.md references all 4 reference files, the asset template, and the profiling script. Contains preamble check, intake filtering questions, and "Next Steps" section. <!-- sha:0210462 -->
 - [x] **Step 4:** Commit: "feat: add SKILL.md for dos:evaluate-source" <!-- sha:0210462 -->
 

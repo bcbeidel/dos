@@ -31,7 +31,7 @@ Every artifact includes YAML frontmatter with these required fields:
 | Field | Type | Description |
 |-------|------|-------------|
 | `name` | string | Source name or data product name (matches directory name) |
-| `artifact_type` | enum | One of: `source-evaluation`, `scope`, `contract`, `quality-config`, `pipeline-architecture` |
+| `artifact_type` | enum | `source-evaluation` (in `docs/sources/`) or `scope`, `contract`, `quality-config`, `pipeline-architecture` (in `docs/data-products/`) |
 | `version` | semver | Artifact version (see versioning rules below) |
 | `owner` | string | Team or individual responsible |
 | `status` | enum | One of: `draft`, `active`, `deprecated` |
