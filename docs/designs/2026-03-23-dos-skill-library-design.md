@@ -118,6 +118,23 @@ Build-phase skills (`dos:implement-source`, `dos:implement-models`) produce code
 
 To maintain traceability, Build-phase skills update the specification artifacts they consumed — setting the `status` field to indicate implementation state and noting the generated file paths in the changelog.
 
+### Iteration Bounds
+
+Skills must not enter unbounded retry loops. When a skill's output fails validation or the user requests changes:
+
+- **Cap at 3-5 iterations** per step. If the skill cannot produce valid output (e.g., dbt models that pass linting) within this bound, surface the failure to the user with diagnostics rather than retrying.
+- **Loop detection**: If three consecutive iterations produce >90% similar output, the problem exceeds the skill's capability — stop and explain what's blocking progress.
+
+### Upstream Artifact Validation
+
+Build-phase skills must deterministically validate that input artifacts are parseable and structurally complete before starting LLM-based code generation. Before any creative work:
+
+1. Verify the artifact file exists and has valid YAML frontmatter.
+2. Verify required sections are present (e.g., a contract must have a schema section before `implement-models` can generate code).
+3. If validation fails, report what's missing with specific field names and suggest which skill to run to fix it.
+
+This prevents wasted LLM work on incomplete inputs and provides clear self-correction signals.
+
 ### Validation Scripts
 
 `scripts/` contains deterministic checks that run as Claude Code hooks or standalone. Scripts are shell or Python, return exit code 0 (pass) or 2 (blocking error), and output structured error messages with specific location, expected-vs-found, and available alternatives for agent self-correction.
@@ -155,24 +172,26 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 **Workflow:**
 
-1. Gather source metadata — type, ownership, format, location
-2. Classify source type (transactional DB, event stream, SaaS API, file-based)
-3. Score across six dimensions:
+1. Apply intake filtering — ask the two qualifying questions before deep assessment: "What decision will you make with this data?" and "What is the real problem you're trying to solve?" If the request lacks a concrete use case, flag it before investing in full evaluation.
+2. Gather source metadata — type, ownership, format, location
+3. Classify source type (transactional DB, event stream, SaaS API, file-based)
+4. Score across six dimensions:
    - Connectivity — how the source exposes data (JDBC, REST, stream, file, webhook)
    - Volume — data size at rest and change rate (use 95th percentile, not averages)
    - Freshness — update frequency and reliable timestamp availability
    - Schema stability — change frequency and notification process over past 6-12 months
    - Data quality — baseline across DAMA dimensions from profiling
    - Access complexity — auth mechanism, rate limits, IP restrictions, token refresh
-4. Document authentication mechanism (OAuth M2M, API key, service account, key-pair, JDBC credentials)
-5. Assess credential management — where secrets live, rotation cadence, anti-patterns (static PATs, shared credentials)
-6. Profile sample data if provided:
+5. Document authentication mechanism (OAuth M2M, API key, service account, key-pair, JDBC credentials)
+6. Assess credential management — where secrets live, rotation cadence, anti-patterns (static PATs, shared credentials)
+7. Profile sample data if provided:
    - Structure profiling — column names, types, field lengths, naming consistency
    - Content profiling — null rates, distinct counts, uniqueness ratios, min/max, distributions, pattern frequencies
    - Relationship profiling — key candidates, referential integrity, orphan detection (if multi-table)
    - Map profiling results to quality dimension baselines
-7. Recommend ingestion approach (full load, incremental, CDC) based on classification and dimension scores
-8. Generate scorecard with "Next Steps" suggesting `dos:scope-data-product`
+8. Recommend ingestion approach (full load, incremental, CDC) based on classification and dimension scores. Note: dlt is a polling tool, not CDC — if log-based CDC is needed, recommend Debezium or platform-native CDC.
+9. Note profiling baseline date and recommend re-profiling cadence based on schema stability score (high drift = monthly, stable = quarterly). Profiling is continuous, not one-time.
+10. Generate scorecard with "Next Steps" suggesting `dos:scope-data-product`
 
 **Curated references (distilled from context corpus):**
 
@@ -201,19 +220,20 @@ Each skill is independently usable. When chained, downstream skills consume upst
 **Workflow:**
 
 1. If source scorecard exists, load it. Pre-populate source classification, profiling baselines, ingestion recommendation. Skip questions already answered.
-2. Interrogate intended use cases — "What decisions will be made with this data?"
-3. Identify consumers and their query patterns (join-heavy, scan-heavy, entity lookup, ad-hoc)
-4. Quantify freshness requirements in specific time units (not adjectives)
-5. Classify SLA tier — prototype (no SLA, re-run on failure) vs. production-grade (formal SLA, error budgets)
-6. Apply consumption-driven heuristics:
+2. Walk through the Data Product Canvas blocks in consumption-first order: Consumers/Use Cases → Data Contract → Sources → Architecture → Domain → Ubiquitous Language → Classification. Start from what consumers need, work backward to what sources provide.
+3. Interrogate intended use cases — "What decisions will be made with this data?" Supplement stated requirements with empirical evidence: review actual dashboards, SQL queries, or query logs (BigQuery INFORMATION_SCHEMA.JOBS, Snowflake QUERY_HISTORY) to understand how data is actually consumed vs. how stakeholders say it is consumed.
+4. Identify consumers and their query patterns (join-heavy, scan-heavy, entity lookup, ad-hoc)
+5. Quantify freshness requirements in specific time units (not adjectives). Ask: "What business decision changes if the data is 5 minutes old instead of 5 seconds old?"
+6. Classify SLA tier — prototype (no SLA, re-run on failure) vs. production-grade (formal SLA, error budgets)
+7. Apply consumption-driven heuristics:
    - Query shape → modeling recommendation
    - Freshness need → ingestion strategy
    - SLA tier → pipeline investment level
-7. Select initial quality dimensions and derive thresholds from profiling baselines + consumption tolerances
-8. Define initial SLA dimensions (timeliness + completeness as minimum)
-9. Apply MoSCoW prioritization if multiple consumers have competing requirements
-10. Generate scope document with explicit "Won't have in v1" section
-11. Suggest next skills: `dos:select-model`, `dos:define-contract`, `dos:assess-quality`, `dos:design-pipeline`
+8. Select initial quality dimensions and derive thresholds from profiling baselines + consumption tolerances
+9. Define initial SLA dimensions (timeliness + completeness as minimum). Use SLI/SLO/SLA hierarchy: define the indicator first, set the objective, then negotiate the agreement.
+10. Apply MoSCoW prioritization if multiple consumers have competing requirements
+11. Generate scope document with explicit "Won't have in v1" section
+12. Suggest next skills: `dos:select-model`, `dos:define-contract`, `dos:assess-quality`, `dos:design-pipeline`
 
 **Curated references:**
 
@@ -273,9 +293,13 @@ Each skill is independently usable. When chained, downstream skills consume upst
 7. Apply versioning:
    - Additive changes (new column, relaxed constraint) → minor version bump
    - Breaking changes (removed column, type change, tightened constraint) → major version bump with expand-contract pattern
-8. Generate ODCS v3.1-aligned contract document.
-9. Optionally generate dbt contract configuration snippet (`contract: { enforced: true }`, column definitions).
-10. Suggest next skills: `dos:assess-quality`, `dos:implement-models`
+8. Define enforcement strategy across three layers:
+   - **CI-time**: breaking change detection via `dbt state:modified+` comparison
+   - **Build-time**: schema validation via dbt contract preflight (`contract: { enforced: true }`)
+   - **Runtime**: data quality and SLA checks via Soda/Great Expectations or dbt tests
+9. Generate ODCS v3.1-aligned contract document covering all 11 sections (Fundamentals, Schema, References, Data Quality, Support, Pricing, Team, Roles, SLA, Infrastructure, Custom Properties).
+10. Optionally generate dbt contract configuration snippet (`contract: { enforced: true }`, column definitions).
+11. Suggest next skills: `dos:assess-quality`, `dos:implement-models`
 
 **Curated references:**
 
@@ -339,10 +363,15 @@ Each skill is independently usable. When chained, downstream skills consume upst
 5. Select layering strategy:
    - Medallion (Bronze → Silver → Gold) when: multiple consumers, different quality tiers, need raw data preservation
    - Simpler (staging → marts) when: single consumer, straightforward transformations
-6. Select incremental loading pattern (full refresh, append, merge, delete+insert, microbatch) with silent failure mode warnings.
-7. Define schema evolution approach (additive-only, expand-contract, tool-specific handling for dbt/dlt/Delta).
-8. Flag platform-specific considerations.
-9. Flag three anti-patterns: premature streaming, over-normalization, universal SLAs.
+6. Select incremental loading pattern (full refresh, append, merge, delete+insert, microbatch). For each pattern, surface the specific silent failure modes:
+   - Append: duplicate accumulation if source replays events
+   - Merge: full-table scan on large tables without partition pruning
+   - Delete+insert: non-atomic — partial tables visible during execution
+   - Microbatch: gaps if batches overlap or skip time ranges
+7. Ensure idempotency by design — every pipeline must produce the same result if re-executed. Three strategies: delete+insert with transaction wrapping, merge/upsert on primary key, or immutable append with downstream deduplication.
+8. Define schema evolution approach (additive-only, expand-contract, tool-specific handling for dbt/dlt/Delta).
+9. Flag platform-specific considerations.
+10. Flag three anti-patterns: premature streaming, over-normalization, universal SLAs.
 10. Generate architecture document.
 11. Suggest next skills: `dos:implement-source`, `dos:implement-models`
 
@@ -369,18 +398,24 @@ Each skill is independently usable. When chained, downstream skills consume upst
 1. Read source evaluation scorecard — extract source type, classification, auth mechanism, ingestion approach.
 2. If pipeline architecture exists, extract layering strategy and incremental pattern.
 3. If contract exists, extract schema for source definition columns.
-4. Generate dlt pipeline:
+4. Validate ingestion approach against tooling capability. dlt is a polling/extraction tool, NOT CDC — it does not read transaction logs. If the scorecard recommends CDC (log-based change capture for high-frequency transactional sources), guide the user to Debezium or platform-native CDC instead of dlt. dlt is appropriate for API extraction, file-based sources, and database polling with cursor-based incremental loading.
+5. Generate dlt pipeline:
    - Source/resource definitions matching the source classification
    - Connection configuration referencing the documented auth mechanism
-   - Write disposition (replace, append, merge) matching the ingestion approach
+   - Write disposition (replace, append, merge) matching the ingestion approach. Flag `replace` risk: it truncates before loading, leaving empty/partial tables on failure — recommend staging with atomic swap where supported.
    - Incremental loading configuration (cursor fields, merge keys) if applicable
-5. Generate dbt source YAML:
+6. Flag dlt configuration pitfalls:
+   - Bug #2782: `dlt.config.get()` reads from `secrets.toml` instead of `config.toml` — test config/secrets separation explicitly
+   - Silent env var failures: double-underscore nesting errors produce no warning, dlt silently falls back to TOML
+   - Silent destination fallback: misnamed destinations silently fall back to shorthand type string
+   - Nested data divergence at `max_table_nesting=0`: behavior differs silently across DuckDB, Snowflake, Databricks, ClickHouse
+7. Generate dbt source YAML:
    - Source and table definitions
    - `loaded_at_field` and freshness thresholds from scorecard/scope
    - Column definitions from contract if available
-6. Remind user to wire `dbt source freshness` as a separate orchestrator step (not included in `dbt build`).
-7. Update source evaluation scorecard status to reflect implementation.
-8. Suggest next skills: `dos:implement-models` (if not yet done), `dos:review-pipeline`
+8. Remind user to wire `dbt source freshness` as a separate orchestrator step (not included in `dbt build`).
+9. Update source evaluation scorecard status to reflect implementation.
+10. Suggest next skills: `dos:implement-models` (if not yet done), `dos:review-pipeline`
 
 **Curated references:**
 
@@ -405,18 +440,22 @@ Each skill is independently usable. When chained, downstream skills consume upst
 2. If quality config exists, extract dimensions, thresholds, and scoring for test generation.
 3. If pipeline architecture exists, extract layering strategy and incremental configuration.
 4. If scope exists, extract modeling recommendation and consumption patterns.
-5. Generate dbt models by layer:
+5. Detect target platform and flag incompatibilities before generating code:
+   - **ClickHouse**: no merge incremental strategy, no Python models, CTEs fail with INSERT (ephemeral models broken), ReplicatedMergeTree deduplication prevents delete+insert. Recommend append-only patterns with materialized views for pre-aggregation.
+   - **Semi-structured data** (JSON types in contract): dbt's 38 cross-database macros have zero coverage for JSON path extraction, regex, and array flattening. Require dispatch shim implementations before proceeding.
+6. Generate dbt models by layer:
    - **Staging**: rename, cast, basic cleaning. Materialized as view or ephemeral. One model per source table.
    - **Intermediate**: business logic joins, enrichments, deduplication. Materialized as table or incremental.
    - **Marts**: consumer-facing models matching the modeling recommendation (star schema facts/dims, wide tables, entity-centric). Materialized as table or incremental. Contract enforcement enabled.
-6. Generate schema YAMLs alongside each model:
+7. Generate schema YAMLs alongside each model:
    - Column definitions with descriptions from contract
    - `contract: { enforced: true }` on mart models
    - Generic tests from quality config: `not_null`, `unique`, `accepted_values`, `relationships`
    - dbt-expectations tests for distribution/range checks if quality config specifies them
-7. Generate dbt unit tests for critical transformation logic (dbt v1.8+).
-8. Update contract and quality config status to reflect implementation.
-9. Suggest next skill: `dos:review-pipeline`
+8. Flag contract enforcement false confidence: DuckDB enforces all constraints at build time, but Snowflake and Databricks treat most constraints as metadata-only. Add explicit dbt tests for every constraint the production warehouse does not enforce — a contract passing locally can silently allow invalid data in production.
+9. Generate dbt unit tests for critical transformation logic (dbt v1.8+).
+10. Update contract and quality config status to reflect implementation.
+11. Suggest next skill: `dos:review-pipeline`
 
 **Curated references:**
 
@@ -440,22 +479,29 @@ Each skill is independently usable. When chained, downstream skills consume upst
 
 1. If data product artifacts exist, load them for context.
 2. Inventory the current pipeline: orchestrator, transformation tool, validation tools, monitoring.
-3. Assess observability — are five baseline metrics covered?
+3. Assess observability — are five baseline metrics covered? Start with freshness and volume (highest signal-to-investment ratio), then layer distribution, schema, and lineage.
    - Freshness, volume, distribution, schema, lineage
-   - Distinguish observability (infer data health from outputs) from monitoring (watch execution metrics)
+   - Distinguish observability (infer data health from outputs) from monitoring (watch execution metrics). Both are needed: instrument pipeline monitoring first (orchestrator-native), then layer data observability on top.
 4. Assess validation — is the three-tier strategy in place?
    - Local dev (Pandera + pytest), CI (dbt tests), production (Soda/GE)
    - Where are the gaps?
 5. Assess CI/CD — which tiers exist?
    - Pre-commit, PR validation (slim CI), production deployment
-   - Flag known blind spots: var()/env_var() changes, incremental model false confidence, manifest staleness
-6. Assess SLA compliance:
-   - Are SLAs defined? Do they follow SLI/SLO/SLA hierarchy?
-   - Is `dbt source freshness` wired separately from `dbt build`?
+   - Flag three known slim CI blind spots:
+     1. False negatives for var()/env_var() changes — CI passes, production breaks
+     2. Incremental models run full-refresh in CI — entirely different SQL path from production. Fix: `dbt clone` to seed CI schema first.
+     3. State artifact (manifest.json) staleness — if manifest is stale or missing, `state:modified+` comparisons are wrong. The pipeline that persists the manifest is itself a failure mode.
+6. Assess SLA compliance across three enforcement layers:
+   - **CI-time**: Are breaking changes detected via state comparison?
+   - **Build-time**: Are dbt contracts enforced? Are constraints actually enforced by the production warehouse (not just metadata)?
+   - **Runtime**: Are quality checks and freshness monitoring in place?
+   - Are SLAs quantified with error budgets ("99.5% compliance ≈ 3.6h/month violation allowed") or aspirational ("data should be fresh")?
+   - Is `dbt source freshness` wired separately from `dbt build`? If not, there is no freshness monitoring.
 7. Assess retry and failure handling:
-   - Terminal vs. transient failure classification
-   - Exponential backoff with jitter
-   - Dead letter queue for exhausted retries
+   - Has every known failure mode been classified as terminal or transient?
+   - Exponential backoff with jitter (not fixed-interval retry)
+   - Dead letter queue for records that exhaust retries
+   - Flag: dlt has no default retry — must use tenacity or equivalent
 8. Flag gaps between artifacts and implementation (contract says X, code does Y).
 9. Generate review checklist with findings, severity, and recommendations.
 10. Append review to `reviews/` directory (reviews are append-only, not overwritten).
