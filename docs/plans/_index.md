@@ -7,3 +7,4 @@
 | [2026-03-23-foundation-evaluate-source.plan.md](2026-03-23-foundation-evaluate-source.plan.md) | Scaffold the skill architecture and implement dos:evaluate-source end-to-end, validating directory conventions, SKILL.md constraints, reference curation, artifact templates, and scripts. |
 | [2026-03-23-scope-design-skills.plan.md](2026-03-23-scope-design-skills.plan.md) | Implement 5 skills (scope-data-product, select-model, define-contract, assess-quality, design-pipeline) following the validated pattern from evaluate-source. |
 | [2026-03-23-build-phase-skills.plan.md](2026-03-23-build-phase-skills.plan.md) | Implement 2 Build-phase skills (implement-source, implement-models) that generate code from data product specification artifacts. |
+| [2026-03-23-verify-phase-review-pipeline.plan.md](2026-03-23-verify-phase-review-pipeline.plan.md) | Implement the final Tier 1 skill (dos:review-pipeline) that audits data pipelines against best practices. |

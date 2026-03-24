@@ -30,6 +30,7 @@ Skills are namespaced under `dos:` and invocable as `/dos:<skill-name>`.
 | `dos:design-pipeline` | Architecture a data pipeline from source to serving layer. |
 | `dos:implement-source` | Generate dlt pipeline code and dbt source definitions from data product artifacts. |
 | `dos:implement-models` | Generate dbt models, schema YAMLs, tests, and contract enforcement from data product artifacts. |
+| `dos:review-pipeline` | Audit an existing data pipeline against best practices. |
 
 ## Development
 
