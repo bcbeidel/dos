@@ -39,6 +39,8 @@ Document the current pipeline stack. Ask about or detect:
 
 If pipeline architecture artifact exists, cross-reference against it.
 
+If no pipeline code is found in the project (no dbt models, no dlt pipelines), note this and adjust the review scope to assess the specification artifacts and readiness for implementation rather than auditing running code. Suggest `/dos:implement-source` and `/dos:implement-models` as next steps.
+
 ### Step 2: Observability Assessment
 
 Assess whether the five baseline data observability metrics are covered. Refer to [observability-pillars.md](references/observability-pillars.md) for assessment criteria per metric and the observability-vs-monitoring distinction.

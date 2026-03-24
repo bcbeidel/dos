@@ -8,9 +8,21 @@
 | 2 | CI pipeline | dbt data tests + dbt-expectations (Metaplane fork) | `state:modified+` selector used? Data diffing enabled? <10 min execution? |
 | 3 | Production | Soda / Great Expectations, dbt source freshness | Continuous monitoring? Anomaly detection? Source freshness as pre-build step? |
 
-**Gap detection:** For each tier, check: (a) is it implemented? (b) what tool(s)? (c) what's missing compared to the expected coverage?
+**Gap detection per tier:**
 
-Small teams (1-3 engineers): collapsing tiers is acceptable. dbt tests in CI/production is the minimum viable setup.
+| Tier | Check | Common Gap |
+|------|-------|------------|
+| 1 | Tests run in <60s? | No local testing at all — everything goes to CI |
+| 1 | Python transformation logic covered by pytest? | dlt extractors untested |
+| 1 | dbt unit tests (v1.8+) for SQL logic? | Unit tests not adopted yet |
+| 2 | `state:modified+` selector used? | Full builds on every PR (slow, wasteful) |
+| 2 | Data diffing between PR and production? | No Datafold or equivalent |
+| 2 | dbt-expectations for range/distribution? | Only generic tests (not_null, unique) |
+| 3 | Source freshness wired separately from `dbt build`? | No freshness monitoring |
+| 3 | Anomaly detection on production data? | Rule-based only, no statistical |
+| 3 | Quality agreements with stakeholder-approved thresholds? | Engineering-defined only |
+
+Small teams (1-3 engineers): collapsing tiers is acceptable. dbt tests in CI/production is the minimum viable setup. The three-tier strategy is a target architecture, not a minimum viable setup.
 
 ## CI/CD Tier Assessment
 
