@@ -1,0 +1,56 @@
+name: Skill Feedback
+description: Report what worked, what didn't, or what was confusing after using a dos skill
+title: "[feedback] dos:<skill> — <one-line summary>"
+labels: ["feedback"]
+body:
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill?
+      options:
+        - dos:evaluate-source
+        - dos:scope-data-product
+        - dos:select-model
+        - dos:define-contract
+        - dos:assess-quality
+        - dos:design-pipeline
+        - dos:implement-source
+        - dos:implement-models
+        - dos:review-pipeline
+        - Skill chaining (multiple skills)
+    validations:
+      required: true
+  - type: dropdown
+    id: verdict
+    attributes:
+      label: Overall verdict
+      options:
+        - Worked well
+        - Worked with issues
+        - Did not work
+    validations:
+      required: true
+  - type: textarea
+    id: what-worked
+    attributes:
+      label: What worked?
+      description: What the skill got right — guidance quality, artifact output, workflow flow
+      placeholder: The six-dimension scoring framework produced a useful baseline...
+  - type: textarea
+    id: what-didnt
+    attributes:
+      label: What didn't work?
+      description: Where the skill fell short — missing guidance, wrong assumptions, confusing steps
+      placeholder: Step 4 assumed I had access to the source database, but I only had a CSV export...
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: Suggestions
+      description: Specific changes that would improve the skill
+      placeholder: Add a branch for file-only sources that skips the connectivity assessment...
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What you were working on, source type, tools in use — anything that helps interpret the feedback
+      placeholder: Evaluating a Stripe API source for an orders data product, using dlt + dbt on DuckDB locally
