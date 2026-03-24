@@ -2,7 +2,7 @@
 name: Build Phase Skills
 description: Implement 2 Build-phase skills (implement-source, implement-models) that generate code from data product specification artifacts, completing the Discover→Scope→Design→Build chain.
 type: plan
-status: executing
+status: completed
 related:
   - docs/designs/2026-03-23-dos-skill-library-design.md
   - docs/plans/2026-03-23-scope-design-skills.plan.md
