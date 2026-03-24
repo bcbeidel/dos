@@ -22,7 +22,7 @@ Skills are namespaced under `dos:` and invocable as `/dos:<skill-name>`.
 
 | Skill | Description |
 |-------|-------------|
-| _(more coming)_ | |
+| `dos:evaluate-source` | Assess a data source's technical characteristics before pipeline construction. |
 
 ## Development
 
