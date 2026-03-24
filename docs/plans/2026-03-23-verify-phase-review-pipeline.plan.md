@@ -135,4 +135,28 @@ Won't have:
 - [ ] **Semantic: Inline references** — SKILL.md references curated files inline within workflow steps, never in a separate summary section
 - [ ] **Semantic: Cross-artifact consistency** — review checklist template's sections align with the assessment dimensions in SKILL.md (1:1 mapping)
 
-## Notes (optional)
+## Retrospective
+
+**Date:** 2026-03-23
+**Duration:** Single session (tail end of a longer session covering build + verify phases)
+**Commits:** 7 (4 task commits + 1 challenge correction + 2 plan checkpoint commits)
+**PR:** https://github.com/bcbeidel/dos/pull/6
+
+### Completed
+
+4/4 tasks completed. Delivered the 9th and final Tier 1 skill (dos:review-pipeline) with 1 review checklist asset template, 4 curated reference files, and SKILL.md. All 9 foundational skills now in place: Discover → Scope → Design → Build → Verify.
+
+### Deviations
+
+- **Terminal skill Next Steps corrected to loop-back.** Pre-execution challenge caught that the plan said "no Next Steps" — but the design convention says every artifact has Next Steps, and the chaining table says review-pipeline "informs next iteration." Changed to loop-back pattern recommending upstream skills based on findings.
+- **Approach text corrected.** Plan claimed "4 reference files map 1:1 to context corpus files" — actually 4 references drawn from 6 context files. Wording fixed before execution.
+- **Changelog added to review template.** Design says "every artifact includes a changelog." Reviews are append-only (changelog will only ever have one entry), but included for convention consistency rather than making an exception.
+- **No-pipeline-code edge case added.** Post-execution challenge identified that SKILL.md didn't handle the case where no pipeline code exists yet. Added explicit instruction to Step 1 to adjust review scope to readiness assessment.
+- **validation-audit.md expanded.** Post-execution challenge flagged that 43 lines was thin for covering both validation strategy and CI/CD blind spots. Expanded to 55 lines with per-tier gap detection table.
+
+### Lessons
+
+1. **Smallest plan yet — 4 tasks, clean execution.** Single-skill plans execute quickly with minimal coordination overhead. The template-first authoring order (asset → references → SKILL.md) is now proven across Design-like and Build-like skills.
+2. **"Terminal skill" needs careful interpretation.** Terminal in the chain doesn't mean no next steps — it means loop-back. The design convention ("every artifact has Next Steps") and the chaining table ("informs next iteration") are complementary, not contradictory. Future skills that are chain endpoints should default to loop-back, not absence.
+3. **Post-execution challenge continues to find implementation quality gaps that validation misses.** The no-pipeline-code edge case and validation-audit thinness were both caught by challenge, not by the 13 validation criteria. The two-stage pattern (validate structure, challenge quality) is reliable.
+4. **All 9 Tier 1 skills follow a consistent pattern.** SKILL.md sizes: 129-253 lines. Reference files: 35-97 lines. Asset templates: 105-215 lines. Progressive disclosure works — no skill approached the 500-line constraint.
