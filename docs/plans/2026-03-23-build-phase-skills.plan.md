@@ -209,4 +209,28 @@ Won't have:
 - [ ] **Semantic: Cross-skill consistency** — verify that implement-source and implement-models SKILL.md files use consistent terminology for dbt source references (implement-source generates source definitions; implement-models references those sources via `{{ source() }}` in staging models)
 - [ ] `grep -c "dos:" README.md` — 8 skills listed
 
-## Notes (optional)
+## Retrospective
+
+**Date:** 2026-03-23
+**Duration:** Single session
+**Commits:** 9 (7 task commits + 2 plan checkpoint commits)
+**PR:** https://github.com/bcbeidel/dos/pull/5
+
+### Completed
+
+7/7 tasks completed. Delivered 2 Build-phase skills (implement-source, implement-models) with 7 curated reference files, 2 upstream validation scripts, and 2 SKILL.md files. Updated README and plan index.
+
+### Deviations
+
+- **Shell → Python for validation scripts.** Plan originally specified `.sh` scripts. Pre-execution challenge identified that the only existing script precedent (`profile-sample.py`) is Python and that Python handles frontmatter parsing more robustly. Changed to `.py` before execution began.
+- **Authoring order reframed.** Plan originally claimed "references-first authoring order validated in prior plans." Challenge corrected this to "adapted from template-first pattern" — honest framing since Build-phase skills have no asset templates, making references-first an untested (though reasonable) adaptation.
+- **Optional input detection added to implement-source.** Challenge identified asymmetry: implement-models' validation script reports optional artifacts, but implement-source's script couldn't (source name ≠ data product name). Resolution: keep validation script focused on required scorecard, add optional input detection to SKILL.md preamble where the data product association is a runtime question.
+- **Cross-skill consistency check added.** Challenge applied prior retrospective lesson #3 ("validation criteria should include at least one cross-artifact consistency check"), adding a 17th validation criterion for `{{ source() }}` reference format consistency between the two skills.
+- **Won't Have item added.** "Prescribed code output directory structure" added after challenge identified no conventions exist for where generated code should live — skills detect project layout or ask at runtime.
+
+### Lessons
+
+1. **Pre-execution challenge on the plan was highly valuable.** Caught 5 corrections (authoring order claim, shell→Python, validation asymmetry, missing cross-skill check, missing Won't Have) that would have been harder to fix during or after execution. The two-challenge pattern (plan + implementation) catches different things — plan challenge validates assumptions, implementation challenge validates quality.
+2. **Build-phase skills are simpler to author than Design-phase skills.** Both SKILL.md files came in at 129-130 lines (vs. 140-253 for Design-phase), likely because code generation workflows have a cleaner sequential structure than advisory workflows with many decision branches. The 500-line constraint was never close to binding.
+3. **Validation scripts are lightweight but effective.** Both scripts are under 100 lines of Python stdlib. The structured error format (ERROR + FIX with skill suggestion) provides clear self-correction signals. The simple `parse_frontmatter` function works because artifact frontmatter is deliberately kept to simple scalar values.
+4. **Sequential execution was fine for 7 tasks.** No parallelism was needed — each task completed quickly and the sequential flow made plan tracking straightforward. Parallel execution would have been premature optimization for this plan size.
