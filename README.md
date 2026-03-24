@@ -32,6 +32,38 @@ Skills are namespaced under `dos:` and invocable as `/dos:<skill-name>`.
 | `dos:implement-models` | Generate dbt models, schema YAMLs, tests, and contract enforcement from data product artifacts. |
 | `dos:review-pipeline` | Audit an existing data pipeline against best practices. |
 
+## Workflow
+
+Skills chain together — each produces artifacts that downstream skills consume. Start anywhere; skills work independently but are most effective in sequence.
+
+```
+  Discover          Scope            Design              Build           Verify
+┌────────────┐  ┌─────────────┐  ┌───────────────┐  ┌──────────────┐  ┌─────────────┐
+│ evaluate-  │─▶│ scope-data- │─▶│ select-model  │  │ implement-   │  │ review-     │
+│ source     │  │ product     │  │ define-       │─▶│ source (EL)  │─▶│ pipeline    │
+│            │  │             │─▶│  contract     │  │              │  │             │
+│            │  │             │  │ assess-       │  ├──────────────┤  │             │
+│            │  │             │─▶│  quality      │─▶│ implement-   │─▶│             │
+│            │  │             │  │ design-       │  │ models (T)   │  │             │
+│            │  │             │─▶│  pipeline     │─▶│              │  │             │
+└────────────┘  └─────────────┘  └───────────────┘  └──────────────┘  └─────────────┘
+```
+
+**Typical flow:**
+
+1. `/dos:evaluate-source` — assess a source system (e.g., `postgres-orders-db`)
+2. `/dos:scope-data-product` — define what the data product needs to be
+3. `/dos:define-contract` + `/dos:assess-quality` + `/dos:design-pipeline` — specify the contract, quality rules, and architecture (any order)
+4. `/dos:implement-source` — generate dlt pipeline + dbt source YAML
+5. `/dos:implement-models` — generate dbt models, tests, and contract enforcement
+6. `/dos:review-pipeline` — audit the result; findings loop back to upstream skills
+
+Each skill checks for existing artifacts and adjusts its workflow accordingly. You don't have to start from step 1 — jump in wherever your project is.
+
+## Feedback
+
+After using a skill, [file feedback](../../issues/new?template=skill-feedback.yml) to help improve it. Report what worked, what didn't, and suggestions.
+
 ## Development
 
 Skills live in `skills/<skill-name>/SKILL.md`. Each skill directory may also contain supporting scripts and reference docs.
