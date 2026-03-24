@@ -2,7 +2,7 @@
 name: Scope + Design Phase Skills
 description: Implement 5 skills (scope-data-product, select-model, define-contract, assess-quality, design-pipeline) following the validated pattern from evaluate-source.
 type: plan
-status: executing
+status: completed
 related:
   - docs/designs/2026-03-23-dos-skill-library-design.md
   - docs/plans/2026-03-23-foundation-evaluate-source.plan.md
