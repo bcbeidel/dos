@@ -299,3 +299,32 @@ Won't have:
 - [ ] `grep -c "dos:" README.md` — 6 skills listed
 - [ ] Each SKILL.md contains a preamble check, workflow steps, and "Next Steps" section
 - [ ] Artifact templates use the frontmatter schema from `docs/data-products/_index.md`
+
+---
+
+## Retrospective
+
+**Date:** 2026-03-23
+**Duration:** Single session
+**Commits:** 11 (including 1 challenge-correction commit)
+**PR:** https://github.com/bcbeidel/dos/pull/4
+
+### What went well
+
+- **Parallel subagent execution** for Chunks 2-5 (select-model, define-contract, assess-quality, design-pipeline) ran concurrently after Chunk 1 completed. All 4 subagents produced correct, well-structured output on the first pass with no retries needed.
+- **Pre-execution challenge** identified that the context corpus has thin ODCS detail for 7 of 11 sections. This informed execution — subagents were instructed to create reasonable placeholder guidance for peripheral sections rather than stretching the corpus.
+- **Post-execution challenge** caught 3 implementation quality gaps that validation alone missed: partial scope creation without frontmatter schema, SLA table duplication without cross-reference, and inconsistent reference listing structure. Two were corrected; the third was correctly scoped as cosmetic.
+- **Template-first authoring order** (asset → references → SKILL.md) continued to work well. Writing the artifact template first made SKILL.md authoring faster because the output structure was already defined.
+- **Reference accuracy** held up under spot-checking — all factual claims in subagent-authored reference files traced back to the context corpus verbatim.
+
+### What could be improved
+
+- **Structural consistency across subagents.** Two of four subagents (define-contract, assess-quality) added summary reference sections in their SKILL.md files; the other two used inline-only references matching the evaluate-source pattern. More explicit instructions about structural conventions in the subagent prompts would have prevented this divergence.
+- **Edge case coverage in SKILL.md instructions.** The select-model partial-scope-creation edge case (line 126) wasn't caught during execution or validation — only the post-execution challenge surfaced it. Future plans should include edge-case-specific validation criteria (e.g., "verify behavior when upstream artifacts are absent").
+- **Validation criteria granularity.** The plan's validation section checked structural properties (file counts, line counts, section presence) but not semantic properties (cross-artifact consistency, edge case handling). Adding 2-3 semantic checks would have caught the SLA duplication and partial scope issues earlier.
+
+### Lessons for future plans
+
+1. **Subagent prompts need explicit structural conventions** — not just "follow the pattern" but specific rules like "references must be inline within workflow steps, never in a separate summary section."
+2. **Challenge before and after execution.** Pre-execution challenge validates the plan's assumptions. Post-execution challenge validates implementation quality. Both are valuable and catch different things.
+3. **Validation criteria should include at least one cross-artifact consistency check** — e.g., "verify that overlapping sections across templates (SLAs, quality dimensions) include cross-references to the authoritative source."
