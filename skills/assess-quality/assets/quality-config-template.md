@@ -108,6 +108,8 @@ Composite score thresholds with assigned owners and required actions.
 
 ## SLA Configuration
 
+When a scope document exists, these values should match the SLA dimensions defined in `docs/data-products/<name>/scope.md`. The scope document is the authoritative SLA agreement; this section tracks the operational measurement infrastructure.
+
 | SLA Dimension | SLI (Measured Metric) | SLO (Internal Target) | SLA (Commitment) | Error Budget |
 |---------------|----------------------|----------------------|-------------------|-------------|
 | Timeliness | {{metric}} | {{target}} | {{commitment}} | {{budget}} |

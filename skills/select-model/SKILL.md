@@ -123,7 +123,7 @@ Deliver the final recommendation with:
 - Update `last_modified`
 - Add a changelog entry: "Added modeling recommendation: [approach] based on [key constraints]"
 
-If no scope document exists yet, create one with at minimum the modeling recommendation section populated plus the constraints gathered during this workflow. Note in the changelog that a full scope should be completed via `/dos:scope-data-product`.
+If no scope document exists yet, create one using the frontmatter schema from `docs/data-products/_index.md` (name, artifact_type: scope, version: 1.0.0, owner, status: draft, last_modified). Populate at minimum the modeling recommendation section plus the constraints gathered during this workflow. Note in the changelog that remaining sections should be completed via `/dos:scope-data-product`.
 
 ### Step 7: Next Steps
 
