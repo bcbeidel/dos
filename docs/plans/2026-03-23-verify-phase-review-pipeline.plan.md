@@ -2,7 +2,7 @@
 name: Verify Phase — review-pipeline
 description: Implement the final Tier 1 skill (dos:review-pipeline) that audits data pipelines against best practices, completing the 9-skill Discover→Scope→Design→Build→Verify chain.
 type: plan
-status: executing
+status: completed
 related:
   - docs/designs/2026-03-23-dos-skill-library-design.md
   - docs/plans/2026-03-23-build-phase-skills.plan.md
