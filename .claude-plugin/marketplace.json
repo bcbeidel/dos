@@ -1,0 +1,19 @@
+{
+  "name": "dos",
+  "description": "Skills for the data engineering lifecycle: Discover → Scope → Design → Build → Verify",
+  "owner": {
+    "name": "bcbeidel"
+  },
+  "plugins": [
+    {
+      "name": "dos",
+      "source": {
+        "source": "github",
+        "repo": "bcbeidel/dos"
+      },
+      "description": "Skills for facilitating data engineering work: evaluate sources, scope data products, define contracts, design pipelines, and review implementations.",
+      "version": "0.1.0",
+      "license": "MIT"
+    }
+  ]
+}
