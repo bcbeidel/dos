@@ -16,7 +16,7 @@ Before starting, establish context and validate inputs:
 2. **Validate upstream artifact.** Run the validation script:
 
    ```bash
-   python scripts/validate-upstream.py <product-name>
+   python ${CLAUDE_SKILL_DIR}/scripts/validate-upstream.py <product-name>
    ```
 
    If validation fails, report what's missing and suggest: "Run `/dos:define-contract` to create or complete the contract for this data product." Do not proceed with code generation until the contract passes validation. The script also reports availability of optional inputs (quality config, pipeline architecture, scope).

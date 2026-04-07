@@ -16,7 +16,7 @@ Before starting, establish context and validate inputs:
 2. **Validate upstream artifact.** Run the validation script:
 
    ```bash
-   python scripts/validate-upstream.py <source-name>
+   python ${CLAUDE_SKILL_DIR}/scripts/validate-upstream.py <source-name>
    ```
 
    If validation fails, report what's missing and suggest: "Run `/dos:evaluate-source` to create or complete the scorecard for this source." Do not proceed with code generation until the scorecard passes validation.
