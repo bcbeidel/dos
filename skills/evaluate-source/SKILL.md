@@ -87,7 +87,7 @@ Gather:
 If the user can provide sample data (CSV, JSON, or Parquet file), run the profiling script:
 
 ```bash
-python scripts/profile-sample.py <file_path>
+python ${CLAUDE_SKILL_DIR}/scripts/profile-sample.py <file_path>
 ```
 
 The script outputs markdown tables covering column inventory, content metrics, and key candidates.
