@@ -2,6 +2,14 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.1.1] — 2026-04-06
+
+### Added
+- `marketplace.json` for plugin registry installation (#8)
+
+### Fixed
+- Use `${CLAUDE_SKILL_DIR}` for `validate-upstream.py` path resolution in build-phase skills (#18)
+
 ## [0.1.0] — 2026-03-23
 
 First release. All 9 Tier 1 skills implemented covering the full data engineering lifecycle.
