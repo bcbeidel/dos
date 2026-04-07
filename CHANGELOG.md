@@ -5,6 +5,9 @@ All notable changes to the dos plugin are documented here.
 ## [0.1.2] — 2026-04-07
 
 ### Fixed
+- Cross-artifact model name hallucination: `implement-models` now builds a model registry and validates all `{{ ref() }}` and `{{ source() }}` targets against the codebase before emitting code (#14)
+- `define-contract` dbt snippet generation now checks existing models instead of inventing names from contract objects (#14)
+- `assess-quality` now scans for existing dbt models to use verified names in quality rule SQL (#14)
 - Generated dbt YAML now uses `data_tests:` with `arguments:`/`config:` nesting for dbt >= 1.10.5, fixing `MissingArgumentsPropertyInGenericTestDeprecation` warnings (#13)
 
 ## [0.1.1] — 2026-04-06
