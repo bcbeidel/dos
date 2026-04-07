@@ -28,9 +28,11 @@ Before starting, establish context and validate inputs:
    - **Pipeline architecture** (`pipeline-architecture.md`) — extract layering strategy and incremental configuration.
    - **Scope document** (`scope.md`) — extract modeling recommendation and consumption patterns.
 
-5. **Check for existing code.** Search the project for existing dbt models for this data product. If models exist, read them, diff against the current contract and quality config, and propose updates to align. If no models exist, proceed with generation.
+5. **Build model registry.** Search the project for all existing dbt models (`models/**/*.sql`) and record every filename (without `.sql`) as a known `{{ ref() }}` target. Also parse source definitions from `models/**/*.yml` and any `sources.yml` to build the list of valid `{{ source() }}` targets. This registry is the authoritative set of names that generated code may reference.
 
-6. **Detect project layout.** Find `dbt_project.yml` to determine model paths, naming conventions, and target platform. Ask the user if the project structure is not detectable.
+6. **Check for existing code.** Search the project for existing dbt models for this data product. If models exist, read them, diff against the current contract and quality config, and propose updates to align. If no models exist, proceed with generation.
+
+7. **Detect project layout.** Find `dbt_project.yml` to determine model paths, naming conventions, and target platform. Ask the user if the project structure is not detectable.
 
 ## Workflow
 
@@ -79,7 +81,19 @@ Generate consumer-facing models matching the modeling recommendation from scope 
 - **Entity-centric:** `<entity>` — domain-organized, one model per business entity.
 - **Materialization:** `table` or `incremental`. Enable contract enforcement.
 
-### Step 5: Generate Schema YAMLs
+### Step 5: Validate Cross-References
+
+Before generating schema YAMLs, validate every `{{ ref() }}` and `{{ source() }}` target in the generated SQL:
+
+1. **Build the valid target set.** Combine (a) models being generated in this session (Steps 2–4) with (b) existing models from the Preamble registry.
+2. **Check every `{{ ref() }}`.** For each `{{ ref('model_name') }}` in generated SQL, verify `model_name` exists in the valid target set. A model name from an upstream artifact (contract, quality config) is a suggestion, not a fact — the codebase is authoritative.
+3. **Check every `{{ source() }}`.** For each `{{ source('source_name', 'table_name') }}`, verify against source YAML definitions found in the registry.
+4. **Check column references.** If generated SQL references specific columns in WHERE, JOIN, or SELECT clauses, verify those columns exist in the referenced model's schema YAML or contract property definitions.
+5. **Flag mismatches.** If any reference target is not found, do NOT emit the code. Report the mismatch — showing the hallucinated name and the closest valid match from the registry — and ask the user to confirm the correct name before proceeding.
+
+**This step is critical.** Hallucinated model names in `{{ ref() }}` calls cause `dbt compile` failures. Never assume a model or column name from an upstream artifact is correct — verify it against the codebase.
+
+### Step 6: Generate Schema YAMLs
 
 Generate schema YAML alongside each model. Refer to [dbt-testing-patterns.md](references/dbt-testing-patterns.md) for test mapping and severity configuration.
 
@@ -90,7 +104,7 @@ For each model:
 - dbt-expectations tests for distribution/range checks if quality config specifies them (use Metaplane fork)
 - Severity and `store_failures` configuration based on quality dimension weights
 
-### Step 6: Contract Enforcement
+### Step 7: Contract Enforcement
 
 Refer to [contract-enforcement.md](references/contract-enforcement.md) for the false confidence warning and platform-specific enforcement behavior.
 
@@ -101,20 +115,20 @@ Apply the three-layer enforcement strategy:
 - **Build-time:** `contract: { enforced: true }` for schema validation preflight
 - **Runtime:** dbt data tests for quality and constraint enforcement
 
-### Step 7: Generate Unit Tests
+### Step 8: Generate Unit Tests
 
 Generate dbt unit tests (v1.8+) for critical transformation logic. Refer to [dbt-testing-patterns.md](references/dbt-testing-patterns.md) for unit test patterns.
 
 Focus on: complex joins, conditional logic, edge cases (nulls, zero quantities, negative values, boundary conditions). Run in dev/CI only — static mock inputs waste production compute.
 
-### Step 8: Update Specification Artifacts
+### Step 9: Update Specification Artifacts
 
 After successful code generation, update upstream artifacts to reflect implementation state:
 
 1. **Contract:** Set `status` to `implemented`, update `last_modified`, add changelog entry with generated file paths.
 2. **Quality config** (if consumed): Update `status`, add changelog entry noting which quality dimensions have corresponding dbt tests.
 
-### Step 9: Next Steps
+### Step 10: Next Steps
 
 End with a recommendation for the downstream skill:
 

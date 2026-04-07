@@ -233,10 +233,11 @@ If updating an existing contract:
 
 If the team uses dbt for transformation, offer to generate a dbt-compatible contract snippet:
 
-1. Map each object to a dbt model name
-2. Map each property to a column with `data_type` and constraints
-3. Set `contract: { enforced: true }`
-4. Include only schema enforcement — dbt contracts do not cover quality rules or SLAs
+1. **Check existing models first.** Search for existing dbt models (`models/**/*.sql`) and schema YAMLs (`models/**/*.yml`). If models already exist for this data product, use the actual model and column names from the codebase — do not invent names from the contract's logical object names alone.
+2. Map each object to a dbt model name. If no existing models are found, apply the naming convention `stg_<source>__<table>` / `fct_<process>` / `dim_<entity>` and confirm with the user.
+3. Map each property to a column with `data_type` and constraints
+4. Set `contract: { enforced: true }`
+5. Include only schema enforcement — dbt contracts do not cover quality rules or SLAs
 
 Present the snippet for the user to add to their dbt model YAML. This is a convenience output, not a separate artifact.
 

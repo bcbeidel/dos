@@ -57,6 +57,9 @@ If a scope document or data contract exists, extract relevant context:
 - Guarantees and constraints (drives completeness and uniqueness checks)
 - Freshness requirements (drives timeliness thresholds)
 
+**From existing dbt models (if any):**
+- Search for existing dbt models (`models/**/*.sql`) and schema YAMLs (`models/**/*.yml`) for this data product. Record actual model names and column names. When the quality config references specific models or columns — in measurement methods, rule SQL, or example queries — use names verified against the codebase, not names inferred from the contract alone.
+
 Present pre-populated values to the user for confirmation or adjustment. Do not silently inherit values -- the user must see and approve what was carried forward.
 
 ### Step 3: Select Quality Dimensions
