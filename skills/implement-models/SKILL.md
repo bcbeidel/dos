@@ -95,7 +95,9 @@ Before generating schema YAMLs, validate every `{{ ref() }}` and `{{ source() }}
 
 ### Step 6: Generate Schema YAMLs
 
-Generate schema YAML alongside each model. Refer to [dbt-testing-patterns.md](references/dbt-testing-patterns.md) for test mapping and severity configuration.
+Generate schema YAML alongside each model. Refer to [dbt-testing-patterns.md](references/dbt-testing-patterns.md) for test mapping, severity configuration, and version-appropriate syntax.
+
+**Version-aware YAML:** Use the dbt version detected in Step 1. For dbt >= 1.10.5, use `data_tests:` with `arguments:` / `config:` nesting. For older versions, use `tests:` with flat keys. See dbt-testing-patterns.md for the full format reference.
 
 For each model:
 - Column definitions with descriptions from contract

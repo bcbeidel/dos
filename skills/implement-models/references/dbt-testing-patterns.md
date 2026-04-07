@@ -1,29 +1,43 @@
 # dbt Testing Patterns
 
+## dbt Version Detection
+
+Before generating test YAML, detect the dbt version from `dbt_project.yml` (`require-dbt-version`) or by running `dbt --version`. This determines test syntax:
+
+| dbt Version | Test Property | Argument Nesting |
+|-------------|--------------|-----------------|
+| < 1.8 | `tests:` | Arguments at top level |
+| 1.8 – 1.10.4 | `data_tests:` (preferred) or `tests:` | Arguments at top level |
+| >= 1.10.5 | `data_tests:` | Arguments under `arguments:`, config under `config:` |
+
+The `data_tests:` property replaced `tests:` in dbt 1.8. The `arguments:`/`config:` nesting was introduced in dbt 1.10.5 via the `require_generic_test_arguments_property` behavior flag (defaults to `True` in dbt 1.10.8+). All examples below use the dbt 1.10.5+ format. For older versions, flatten `arguments:` and `config:` keys to the top level.
+
 ## Generic Test Mapping from Quality Dimensions
 
 | Quality Dimension | dbt Generic Test | Configuration |
 |------------------|-----------------|---------------|
 | Completeness | `not_null` | Apply to required columns from contract |
 | Uniqueness | `unique` | Apply to primary key columns |
-| Validity (categorical) | `accepted_values` | `values: [list]` from contract constraints |
-| Referential integrity | `relationships` | `to: ref('dim_table')`, `field: 'id'` |
+| Validity (categorical) | `accepted_values` | `arguments: {values: [list]}` from contract constraints |
+| Referential integrity | `relationships` | `arguments: {to: ref('dim_table'), field: 'id'}` |
 
 ```yaml
 columns:
   - name: order_id
-    tests:
+    data_tests:
       - not_null
       - unique
   - name: status
-    tests:
+    data_tests:
       - accepted_values:
-          values: ['pending', 'shipped', 'delivered', 'cancelled']
+          arguments:
+            values: ['pending', 'shipped', 'delivered', 'cancelled']
   - name: customer_id
-    tests:
+    data_tests:
       - relationships:
-          to: ref('dim_customers')
-          field: customer_id
+          arguments:
+            to: ref('dim_customers')
+            field: customer_id
 ```
 
 ## dbt-expectations Tests for Distribution/Range Checks
@@ -41,7 +55,7 @@ Use the Metaplane fork (original calogica package is unmaintained since December
 ## Severity and Failure Handling
 
 ```yaml
-tests:
+data_tests:
   - not_null:
       config:
         severity: warn        # warn or error
@@ -49,6 +63,8 @@ tests:
         warn_if: ">10"        # warn if >10 failures
         store_failures: true   # persist failures to schema
 ```
+
+**`arguments:` vs `config:` rule:** Test-specific macro inputs (e.g., `values`, `to`, `field`, `min_value`, `max_value`, `expression`) go under `arguments:`. Framework configuration (`severity`, `where`, `tags`, `enabled`, `warn_if`, `error_if`, `fail_calc`, `store_failures`, `store_failures_as`, `meta`, `database`, `schema`, `alias`, `limit`) goes under `config:`. Tests with no arguments (bare `not_null`, `unique`) remain as simple strings.
 
 Treat every suppressed test as tech debt requiring business justification. Alert fatigue from accumulated tests is the dominant risk.
 

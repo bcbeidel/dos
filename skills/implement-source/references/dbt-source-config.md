@@ -19,7 +19,7 @@ sources:
           - name: <column_name>
             description: <from contract if available>
             data_type: <type>
-            tests:
+            data_tests:
               - not_null
               - unique
 ```
