@@ -2,6 +2,11 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.1.2] — 2026-04-07
+
+### Fixed
+- Generated dbt YAML now uses `data_tests:` with `arguments:`/`config:` nesting for dbt >= 1.10.5, fixing `MissingArgumentsPropertyInGenericTestDeprecation` warnings (#13)
+
 ## [0.1.1] — 2026-04-06
 
 ### Added

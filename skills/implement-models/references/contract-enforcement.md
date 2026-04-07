@@ -52,7 +52,7 @@ columns:
     data_type: integer
     constraints:
       - type: primary_key    # Metadata only on Snowflake
-    tests:
+    data_tests:
       - not_null              # Explicit enforcement
       - unique                # Explicit enforcement
 ```
