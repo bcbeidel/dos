@@ -2,7 +2,7 @@
 
 All notable changes to the dos plugin are documented here.
 
-## [0.2.0] — 2026-04-06
+## [0.1.1] — 2026-04-06
 
 ### Added
 - `marketplace.json` for plugin registry installation (#8)
