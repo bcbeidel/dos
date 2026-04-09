@@ -27,6 +27,7 @@ This skill uses the following curated references:
 - [sla-error-budgets.md](references/sla-error-budgets.md) -- SLI/SLO/SLA hierarchy, error budget calculation, tiered SLA structures
 - [validation-tiers.md](references/validation-tiers.md) -- Three-tier execution strategy, tool selection by tier, scaling down guidance
 - [anomaly-methods.md](references/anomaly-methods.md) -- Three detection layers, point anomaly and drift methods, maturity progression
+- [dbt-test-selection.md](references/dbt-test-selection.md) -- Rule type classification and dbt test mapping for implementation guidance
 
 Output template: [quality-config-template.md](assets/quality-config-template.md)
 
@@ -101,6 +102,10 @@ Refer to [scoring-methods.md](references/scoring-methods.md) for the three-tier 
 - Thresholds must be calibrated per data product -- no single set fits all use cases
 - If the scope document specifies SLA targets, use those as starting points
 
+**Rule type classification:** For each measurement method, classify the underlying rule type using [dbt-test-selection.md](references/dbt-test-selection.md). The rule type determines which dbt test implements the check. Do not map directly from dimension to test -- a single dimension (e.g., validity) spans multiple rule types (enum membership, numeric range, string pattern, expression) that require different dbt tests.
+
+For stateful rules (run-over-run comparisons, metric stability checks), flag explicitly that these require singular tests with baseline storage. Reference the implementation patterns in dbt-test-selection.md and note the pattern in the quality config output.
+
 ### Step 5: Choose Scoring Method
 
 Present two options:
@@ -166,6 +171,8 @@ Refer to [validation-tiers.md](references/validation-tiers.md) for the full thre
 3. Defer Soda/GE until dedicated platform engineering capacity exists
 
 Ask about team size and current tooling before recommending. The three-tier strategy is a target architecture, not a minimum viable setup.
+
+**Test selection by rule type:** When recommending specific dbt tests, use the rule-type-to-test mapping in [dbt-test-selection.md](references/dbt-test-selection.md) rather than mapping from dimension name alone. This prevents mismatches where a validity rule is mapped to `accepted_values` when it actually requires `expression_is_true` or a regex test.
 
 ### Step 9: Recommend Anomaly Detection Approach
 
