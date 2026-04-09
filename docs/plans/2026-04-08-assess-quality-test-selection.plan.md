@@ -2,7 +2,7 @@
 name: assess-quality dbt Test Selection Reference
 description: Add rule-type-to-dbt-test mapping reference to assess-quality, fixing wrong test suggestions (#31) and missing run-over-run patterns (#15).
 type: plan
-status: executing
+status: completed
 related:
   - docs/designs/assess-quality-test-selection-brainstorm.md
   - docs/research/2026-04-08-dbt-test-selection-patterns.research.md
@@ -43,9 +43,9 @@ Won't have:
 **Files:**
 - Create: `skills/assess-quality/references/dbt-test-selection.md`
 
-- [ ] **Step 1:** Create the reference file with three sections: (1) Rule Type Taxonomy table listing all stateless and stateful rule types with descriptions and examples, (2) Stateless Rule Mapping table mapping each rule type to its dbt test, package, and config example, (3) Stateful Rule Mapping section with two concrete singular test SQL patterns (seed-based baselines and snapshot-based baselines) and a recommendation ladder by team size. Source content from the brainstorm design doc's "Rule Type to dbt Test Mapping" tables and the research doc's "Rule Type to Test Implementation Mapping" section. End with 5 decision rules. Keep under 200 lines per project convention.
-- [ ] **Step 2:** Verify: `wc -l skills/assess-quality/references/dbt-test-selection.md` returns under 200. Verify file contains all three sections: "Rule Type Taxonomy", "Stateless Rule Mapping", "Stateful Rule Mapping".
-- [ ] **Step 3:** Commit: `feat(assess-quality): add dbt-test-selection reference (#31, #15)`
+- [x] **Step 1:** Create the reference file with three sections: (1) Rule Type Taxonomy table listing all stateless and stateful rule types with descriptions and examples, (2) Stateless Rule Mapping table mapping each rule type to its dbt test, package, and config example, (3) Stateful Rule Mapping section with two concrete singular test SQL patterns (seed-based baselines and snapshot-based baselines) and a recommendation ladder by team size. Source content from the brainstorm design doc's "Rule Type to dbt Test Mapping" tables and the research doc's "Rule Type to Test Implementation Mapping" section. End with 5 decision rules. Keep under 200 lines per project convention.
+- [x] **Step 2:** Verify: `wc -l skills/assess-quality/references/dbt-test-selection.md` returns under 200. Verify file contains all three sections: "Rule Type Taxonomy", "Stateless Rule Mapping", "Stateful Rule Mapping".
+- [x] **Step 3:** Commit: `feat(assess-quality): add dbt-test-selection reference (#31, #15)`
 
 ---
 
@@ -56,9 +56,9 @@ Won't have:
 
 **Depends on:** Task 1
 
-- [ ] **Step 1:** Add `dbt-test-selection.md` to the Reference Materials list in the Preamble section. Add rule-type classification guidance to Step 4 (after threshold calibration guidance): instruct the skill to classify each measurement method into a rule type using the reference, and flag stateful rules as requiring singular tests. Add test-selection-by-rule-type guidance to Step 8 (after scaling guidance): instruct the skill to use the rule-type mapping rather than dimension names when recommending specific dbt tests.
-- [ ] **Step 2:** Verify: `wc -l skills/assess-quality/SKILL.md` returns under 500 (skill line limit). Verify: `grep -c 'dbt-test-selection.md' skills/assess-quality/SKILL.md` returns 3 (reference list + Step 4 + Step 8).
-- [ ] **Step 3:** Commit: `feat(assess-quality): wire dbt-test-selection into SKILL.md steps 4 and 8`
+- [x] **Step 1:** Add `dbt-test-selection.md` to the Reference Materials list in the Preamble section. Add rule-type classification guidance to Step 4 (after threshold calibration guidance): instruct the skill to classify each measurement method into a rule type using the reference, and flag stateful rules as requiring singular tests. Add test-selection-by-rule-type guidance to Step 8 (after scaling guidance): instruct the skill to use the rule-type mapping rather than dimension names when recommending specific dbt tests.
+- [x] **Step 2:** Verify: `wc -l skills/assess-quality/SKILL.md` returns under 500 (skill line limit). Verify: `grep -c 'dbt-test-selection.md' skills/assess-quality/SKILL.md` returns 3 (reference list + Step 4 + Step 8).
+- [x] **Step 3:** Commit: `feat(assess-quality): wire dbt-test-selection into SKILL.md steps 4 and 8`
 
 ---
 
@@ -69,9 +69,9 @@ Won't have:
 
 **Depends on:** Task 1
 
-- [ ] **Step 1:** Add a `Rule Type` column to the Quality Dimensions table (between Dimension and Measurement Method). Update the table header row, separator row, and all example rows. Add a note below the table explaining that rule types come from the taxonomy in `dbt-test-selection.md` and are used by downstream skills to select the correct dbt test. Update the consistency row's measurement method to distinguish referential-integrity from metric-stability rule types.
-- [ ] **Step 2:** Verify: `grep 'Rule Type' skills/assess-quality/assets/quality-config-template.md` returns the header row. Verify template still renders valid markdown.
-- [ ] **Step 3:** Commit: `feat(assess-quality): add rule type column to quality config template`
+- [x] **Step 1:** Add a `Rule Type` column to the Quality Dimensions table (between Dimension and Measurement Method). Update the table header row, separator row, and all example rows. Add a note below the table explaining that rule types come from the taxonomy in `dbt-test-selection.md` and are used by downstream skills to select the correct dbt test. Update the consistency row's measurement method to distinguish referential-integrity from metric-stability rule types.
+- [x] **Step 2:** Verify: `grep 'Rule Type' skills/assess-quality/assets/quality-config-template.md` returns the header row. Verify template still renders valid markdown.
+- [x] **Step 3:** Commit: `feat(assess-quality): add rule type column to quality config template`
 
 ---
 
@@ -79,9 +79,9 @@ Won't have:
 
 **Depends on:** Tasks 1, 2, 3
 
-- [ ] **Step 1:** Update `docs/plans/_index.md` with this plan entry.
-- [ ] **Step 2:** Verify all changes are committed and the branch is clean: `git status` shows clean working tree.
-- [ ] **Step 3:** Commit any remaining index updates.
+- [x] **Step 1:** Update `docs/plans/_index.md` with this plan entry.
+- [x] **Step 2:** Verify all changes are committed and the branch is clean: `git status` shows clean working tree.
+- [x] **Step 3:** Commit any remaining index updates.
 
 ---
 
