@@ -47,6 +47,19 @@ Not all data deserves an SLA. Over-SLA-ing creates the same noise as over-alerti
 
 The cost of maintaining SLAs scales with strictness — 99.9% requires significantly more investment than 99%.
 
+## Delivery Window Guidance
+
+Cadence alone is not a timeliness SLA. A delivery window specifies *when within the cadence period* data must arrive.
+
+| Cadence | Bad SLA | Good SLA |
+|---------|---------|----------|
+| Monthly | "Data refreshed monthly" | "Data available by the 15th of each month" |
+| Weekly | "Data refreshed weekly" | "Data available by 9am Monday" |
+| Daily | "Data refreshed daily" | "Data available by 6am ET" |
+| Hourly | "Data refreshed hourly" | "Data no more than 90 minutes stale" |
+
+Without a delivery window, the error budget is undefined — you cannot measure whether timeliness was met. Always ask: "By when within the [cadence] period does the consumer need the data?"
+
 ## Decision Rules
 
 1. Define freshness and completeness SLAs before the first production deploy.

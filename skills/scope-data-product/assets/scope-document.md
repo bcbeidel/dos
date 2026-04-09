@@ -53,7 +53,7 @@ Define the indicator (SLI) first, set the objective (SLO), then negotiate the ag
 
 | Dimension | SLI (What to Measure) | SLO (Target) | SLA (Commitment) | Error Budget |
 |-----------|----------------------|--------------|-------------------|-------------|
-| Timeliness | {{e.g., max age of latest record}} | {{e.g., 99.5% within 2h}} | {{e.g., 99% within 4h}} | {{e.g., ~7.2h/month}} |
+| Timeliness | {{e.g., max age of latest record}} | {{e.g., 99.5% available by 15th of month}} | {{e.g., 99% available by 15th of month}} | {{e.g., ~7.2h/month}} |
 | Completeness | {{e.g., row count vs expected}} | {{e.g., 99.9% of expected rows}} | {{e.g., 99% of expected rows}} | {{e.g., ~7.2h/month}} |
 | {{additional}} | {{measure}} | {{target}} | {{commitment}} | {{budget}} |
 

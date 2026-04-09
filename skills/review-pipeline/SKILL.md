@@ -78,14 +78,19 @@ For each, assess: exposed, mitigated, or N/A.
 
 ### Step 5: SLA Compliance Assessment
 
-Assess enforcement across three layers. Refer to [sla-checklist.md](references/sla-checklist.md) for the enforcement assessment checklist and SLA quantification criteria.
+Assess enforcement across three layers. Refer to [sla-checklist.md](references/sla-checklist.md) for the enforcement assessment checklist, SLA quantification criteria, and the freshness wiring detection rule.
 
 Key questions:
 - **CI-time:** Are breaking changes detected via state comparison?
 - **Build-time:** Are dbt contracts enforced? Are constraints actually enforced by the production warehouse (not just metadata)?
 - **Runtime:** Are quality checks and freshness monitoring in place?
 - Are SLAs quantified with error budgets, or aspirational?
-- Is `dbt source freshness` wired separately from `dbt build`? If not, there is no freshness monitoring.
+
+**Freshness wiring check (critical):** Detect whether `dbt source freshness` is wired in the production job:
+1. Check if any source YAML (`_sources.yml` or equivalent) defines `freshness` thresholds (e.g., `warn_after`, `error_after`).
+2. Check if the production job or DAG includes a `dbt source freshness` step — `dbt build` and `dbt test` do **not** run freshness checks.
+3. If freshness thresholds are defined but `dbt source freshness` is absent from the production job, flag as **critical**: "Freshness SLI is defined but never measured in production."
+4. Provide the concrete fix: `dbt source freshness --select source:<source_name>`
 
 ### Step 6: Retry & Failure Handling Assessment
 

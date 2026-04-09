@@ -33,6 +33,18 @@
 
 Not all data deserves an SLA. Over-SLA-ing creates the same noise as over-alerting. Start with Tier 1.
 
+## Freshness Wiring Detection
+
+`dbt source freshness` is a separate command — `dbt build` and `dbt test` do not run it.
+
+| Condition | Severity | Finding |
+|-----------|----------|---------|
+| Source YAML defines `freshness` AND production job includes `dbt source freshness` | Pass | Freshness monitoring is wired |
+| Source YAML defines `freshness` BUT production job does NOT include `dbt source freshness` | **Critical** | Freshness SLI is defined but never measured in production |
+| Source YAML does not define `freshness` | Info | No freshness thresholds configured — consider adding if timeliness SLA exists |
+
+When critical: the fix is `dbt source freshness --select source:<source_name>` added as a task in the production job, typically before `dbt build`.
+
 ## Key Checks
 
 1. Are SLAs defined with measurement queries (not prose)?

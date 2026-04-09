@@ -114,13 +114,19 @@ For each selected dimension:
 
 Define SLA dimensions using the SLI/SLO/SLA hierarchy.
 
-Refer to [sla-hierarchy.md](references/sla-hierarchy.md) for the five SLA dimensions, error budget calculation, and tiered guidance.
+Refer to [sla-hierarchy.md](references/sla-hierarchy.md) for the five SLA dimensions, error budget calculation, delivery window guidance, and tiered guidance.
 
 At minimum, define timeliness and completeness SLAs. For each dimension:
 1. Define the SLI (what to measure)
 2. Set the SLO (internal target)
 3. Negotiate the SLA (commitment)
 4. Calculate the error budget
+
+For timeliness SLAs, cadence alone is insufficient — always ask for the specific delivery window:
+
+> "What specific date or time within the [cadence] period does the consumer need the data? For example: 'by the 15th of each month' or 'by 9am every Monday.'"
+
+"Monthly" is not a timeliness SLA. "By the 15th of each month" is. The delivery window determines the SLO target and error budget — without it, downstream artifacts will inherit an ambiguous commitment.
 
 ### Step 10: MoSCoW Prioritization
 
