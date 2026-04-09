@@ -3,3 +3,4 @@
 | File | Description |
 | --- | --- |
 | [2026-03-23-dos-skill-library-design.md](2026-03-23-dos-skill-library-design.md) | Nine foundational skills organized as Discover-Scope-Design-Build-Verify workflow, operating on living data product artifacts. Skills follow Agent Skills spec with Claude Code extensions. |
+| [2026-04-08-implement-source-boundary-guardian.design.md](2026-04-08-implement-source-boundary-guardian.design.md) | Redesign implement-source from scorecard-to-code translator to extraction boundary guardian. Consolidates #33, #30, #29, #26, #24, #16. |

@@ -2,6 +2,26 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.3.0] — 2026-04-08
+
+### Changed
+- Redesigned `implement-source` from scorecard-to-code translator to extraction boundary guardian (#33, #30, #29, #26, #24, #16)
+- New workflow Step 2: "Verify Extraction Boundary" with blocking/advisory checks before code generation
+- Absorbed Step 3 ("Flag dlt Configuration Pitfalls") — content covered by existing `dlt-pipeline-patterns.md` references
+
+### Added
+- `references/extraction-boundary-rules.md` — raw-first extraction rules, violation patterns, cost-of-retry principle, remediation routing
+- `references/dlt-runtime-behaviors.md` — array/child table creation under merge, schema caching on field changes
+- Cost-Aware Retry Configuration section in `dlt-pipeline-patterns.md`
+- Graceful fallback for `validate-upstream.py` when script is not found
+
+### Fixed
+- `implement-source` now detects array/list fields under merge write disposition before generating code (#33)
+- `implement-source` now scans existing code for raw-first violations (model_dump lambdas, schema imports, enrichment logic) (#30, #24)
+- `validate-upstream.py` invocation falls back to manual checklist instead of silently skipping (#29)
+- Schema cache reset warning included in generated pipeline code comments (#26)
+- Cost-of-retry calculated for quota-billed APIs before recommending `max_retries` increases (#16)
+
 ## [0.2.0] — 2026-04-08
 
 ### Added
