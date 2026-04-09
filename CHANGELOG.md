@@ -2,6 +2,26 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.2.0] — 2026-04-08
+
+### Added
+- `evaluate-source` Step 3: Pricing & Cost assessment with safeguards against common cost estimation errors — confirms plan tier, billing unit, and shows transparent calculations (#11)
+- `evaluate-source` Step 8: Live API Validation for SaaS API/REST sources — 3-request validation checklist with correction prompt before saving the scorecard (#10)
+- Pipeline Cost Estimate subsection in Step 9 (Ingestion Recommendation) with formula and confirmed/estimated input labels (#11)
+- Sampling provenance metadata in profiling output — tracks sample size, total population, sampling method, and representativeness warnings (#22, #27)
+- `--json` and `--output` flags for `profile-sample.py` enabling machine-consumable profile output for downstream skill consumption (#22)
+- `--sample-of` flag for `profile-sample.py` to record total population and auto-detect suspicious sample sizes (#22)
+- `references/pricing-models.md` — pricing model classification, billing unit disambiguation, estimation pitfalls, and safeguards checklist (#11)
+- Sampling & Representativeness section in `profiling-metrics.md` with bias signals, strategies for paginated APIs, and provenance recording guidance (#27)
+- Sampling Provenance and Live API Validation sections in the source scorecard template (#10, #22)
+- Cost/pricing as a factor in Access Complexity dimension scoring (#11)
+
+### Changed
+- Rewrote `profile-sample.py` to use DuckDB natively for all statistics — replaced custom Python type inference, percentile calculation, and frequency counting with `SUMMARIZE` and SQL (389 → 294 lines, zero new dependencies)
+- Profile-first, render-second architecture: structured dict is the primary output, markdown tables are a rendered view
+- Renumbered evaluate-source workflow from 10 steps to 12 steps (clean 1-12 sequence)
+- Paginated REST API sampling guidance in Step 7 (Data Profiling) — recommends multi-page sampling with minimum 100-record threshold (#27)
+
 ## [0.1.2] — 2026-04-07
 
 ### Fixed
