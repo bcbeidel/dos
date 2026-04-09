@@ -1,6 +1,6 @@
 {
   "name": "dos",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Skills for facilitating data engineering work",
   "license": "MIT",
   "keywords": ["data-engineering", "etl", "pipelines", "sql", "dbt"],

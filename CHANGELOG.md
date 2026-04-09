@@ -2,6 +2,12 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.3.3] — 2026-04-09
+
+### Added
+- `design-pipeline` Step 2b: Cross-Pipeline Dependencies — surfaces runtime dependencies when intermediate models join across staging domains, with DAG ordering and first-time setup checklist (#25)
+- Cross-Pipeline Dependencies section in pipeline-architecture template with dependency table and prerequisite checklist
+
 ## [0.3.2] — 2026-04-09
 
 ### Added

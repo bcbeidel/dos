@@ -46,6 +46,23 @@ If no scope document exists, ask the user which sources this pipeline will consu
 - Freshness requirement
 - Whether hard deletes must be tracked
 
+### Step 2b: Cross-Pipeline Dependencies
+
+For each source or intermediate model that joins across staging domains (e.g., `int_noaa__stations_enriched` joining `stg_zipcode__zip_codes`), identify the external pipeline that must run first.
+
+Ask: "What other pipeline must run first for this join to succeed?"
+
+For each cross-pipeline dependency, document:
+- The model or join that creates the dependency
+- The upstream pipeline that must complete first
+- The ordering guarantee (scheduling, DAG dependency, or manual)
+
+These dependencies surface as:
+- **Orchestrated pipelines:** Upstream task dependencies in the DAG (e.g., `run_zipcode_pipeline` → `run_noaa_pipeline`)
+- **First-time setup:** A prerequisite checklist before running the pipeline for the first time in a new environment
+
+If no intermediate models join across staging domains, note: "No cross-pipeline dependencies identified."
+
 ### Step 3: Gather Missing Consumption Requirements
 
 If not already captured in the scope document, gather the three consumption dimensions:
@@ -176,6 +193,7 @@ Produce the Pipeline Architecture document using the template structure from [pi
 Save to `docs/data-products/<name>/pipeline-architecture.md` with:
 - Complete YAML frontmatter (name, artifact_type, version, owner, status, last_modified, sources)
 - All sections populated from the workflow above
+- Cross-pipeline dependencies documented (or explicitly noted as none)
 - Silent failure modes documented per source pattern
 - Anti-pattern review completed
 - Changelog entry recording the architecture session
