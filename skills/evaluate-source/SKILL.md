@@ -157,6 +157,30 @@ Map profiling results to quality dimension baselines:
 - Values within ranges/patterns → validity baseline
 - Cross-field checks → consistency baseline
 
+### Step 8: Live API Validation
+
+**This step applies only to SaaS API and REST-based sources.** Skip it entirely for Transactional DB, Event Stream, and File-Based sources.
+
+The profiled data from Step 7 may have come from documentation, code evidence, or a limited sample. Before saving the scorecard, validate against the actual API to catch errors that only surface in live responses.
+
+Ask the operator to run three requests and report the results:
+
+1. **Single record by ID** — Fetch one complete record to inspect the full wire format. Compare every field's actual type against the profiled type. Flag any mismatches (e.g., documented as `date`, wire format is ISO 8601 datetime string; documented as "year-keyed object", actual is date-keyed with `{event, date, price}`).
+
+2. **Small batch from a different parameter** — Fetch 10-25 records using a different geography, date range, category, or ID range than the original sample. Compare null rates against the profiled baseline. Flag any field where the observed null rate diverges by more than 20 percentage points from the profiled value.
+
+3. **Profile comparison** — If the operator can save the API responses as a JSON file, profile them with the profiling script:
+
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/profile-sample.py <api_response.json> --json
+   ```
+
+   Compare the resulting profile against the original. Focus on: type mismatches, null rate divergence, new or missing fields, and sub-field structure differences.
+
+After validation, ask: **"Did the live API responses reveal any differences from the profiled sample? If yes, correct the scorecard before saving."** List specific fields to review: types, null rates, field structures, enum values.
+
+Record the validation results in the scorecard's Live API Validation section.
+
 ### Step 9: Ingestion Recommendation
 
 Based on classification and dimension scores, recommend an ingestion approach.
