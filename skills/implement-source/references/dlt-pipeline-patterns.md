@@ -78,3 +78,24 @@ Test nested data handling on each target platform. DuckDB local behavior does no
 ## Schema Evolution
 
 dlt does not alter columns in place on type change. It creates a versioned column (e.g., `inventory_nr__v_text`). On ClickHouse, sorting and partition keys are immutable after table creation.
+
+## Cost-Aware Retry Configuration
+
+| Retry Type | Behavior | Cost Impact |
+|------------|----------|-------------|
+| Full-state retry (`max_retries` on job) | Replays all API calls from scratch | Multiplies total API cost per retry |
+| Checkpoint retry (dlt incremental cursor) | Resumes from last successful cursor | Only replays failed segment |
+| Idempotent retry (request-level) | Re-requests same data | Depends on API billing model |
+
+Cost calculation:
+
+```
+retry_cost = api_calls_per_run × overage_price_per_call
+```
+
+Decision rule:
+- If `retry_cost > $10`: present cost tradeoff to user before recommending `max_retries > 0`
+- If source is not quota-billed: standard retry guidance applies
+- Prefer checkpoint retry over full-state retry for any quota-billed API
+
+Cross-reference: See `extraction-boundary-rules.md` for the full cost-of-retry decision table.
