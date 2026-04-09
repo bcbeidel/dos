@@ -57,6 +57,49 @@ Avoid as standalone architecture: dimension change cascades, SCD awkwardness, go
 
 Start with the simplest architecture. Add layers only when concrete needs emerge.
 
+## Surrogate Keys for Composite Keys
+
+When a staging model has a composite primary key (e.g., EAV tables keyed by `station + date + data_type`), generate a surrogate `id` column using `dbt_utils.generate_surrogate_key`.
+
+**Pattern:**
+
+```sql
+{{ config(
+    materialized='incremental',
+    unique_key='id',
+    incremental_strategy='merge'
+) }}
+
+select
+    {{ dbt_utils.generate_surrogate_key(['station', 'date', 'data_type']) }} as id,
+    station,
+    date,
+    data_type,
+    value
+from {{ source('noaa', 'observations') }}
+```
+
+**Why surrogate over composite:**
+
+| Concern | Composite `unique_key` | Surrogate `id` |
+|---------|----------------------|----------------|
+| Merge performance | Multi-column join on every merge | Single-column join |
+| Downstream refs | Consumers must know all key columns | Consumers join on `id` |
+| Schema YAML | Multiple columns in uniqueness test | Single `unique` test on `id` |
+
+**Keep composite uniqueness as validation:** Add a `dbt_utils.unique_combination_of_columns` test on the original key columns to catch upstream duplicates. This test validates data quality without serving as the merge key.
+
+```yaml
+data_tests:
+  - dbt_utils.unique_combination_of_columns:
+      combination_of_columns:
+        - station
+        - date
+        - data_type
+```
+
+**When to apply:** Any staging or intermediate model with 2+ columns in `unique_key`. Common in EAV tables, event tables with compound keys, and bridge/association tables.
+
 ## Incremental Model Configuration
 
 ```yaml
