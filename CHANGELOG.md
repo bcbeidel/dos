@@ -2,6 +2,16 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.3.1] — 2026-04-09
+
+### Fixed
+- `scope-data-product` now requires a specific delivery window for timeliness SLAs — cadence alone no longer passes as a valid SLA (#12)
+- `review-pipeline` now detects missing `dbt source freshness` wiring as **critical** when freshness thresholds are defined in source YAML but absent from the production job (#17)
+
+### Added
+- Delivery Window Guidance table in `sla-hierarchy.md` with bad/good SLA examples per cadence
+- Freshness Wiring Detection table in `sla-checklist.md` with condition/severity/finding classification
+
 ## [0.3.0] — 2026-04-08
 
 ### Changed

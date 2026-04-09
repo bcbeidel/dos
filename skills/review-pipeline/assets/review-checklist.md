@@ -79,7 +79,7 @@ Assess enforcement across three layers.
 | **Build-time** | Are dbt contracts enforced (`contract: { enforced: true }`)? | {{yes / no}} | {{model count with contracts}} |
 | **Build-time** | Are constraints actually enforced by production warehouse (not metadata-only)? | {{yes / no / partial}} | {{platform: DuckDB=full, Snowflake=metadata}} |
 | **Runtime** | Are quality checks running in production? | {{yes / no}} | {{tool and frequency}} |
-| **Runtime** | Is `dbt source freshness` wired separately from `dbt build`? | {{yes / no}} | {{if no: no freshness monitoring}} |
+| **Runtime** | Is `dbt source freshness` wired separately from `dbt build`? | {{yes / no}} | {{if source YAML defines freshness thresholds but production job lacks `dbt source freshness`: **critical** — freshness SLI defined but never measured}} |
 
 **SLA quantification:**
 - Are SLAs defined with error budgets? {{yes — e.g., "99.5% compliance ≈ 3.6h/month violation" / no — aspirational only}}
