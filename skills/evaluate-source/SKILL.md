@@ -5,7 +5,7 @@ description: Assess a data source's technical characteristics before pipeline co
 
 # dos:evaluate-source
 
-Assess a data source's technical characteristics before pipeline construction. Walk through intake filtering, source classification, six-dimension scoring, authentication assessment, data profiling, and ingestion recommendation — producing a persistent Source Evaluation Scorecard.
+Assess a data source's technical characteristics before pipeline construction. Walk through intake filtering, pricing assessment, source classification, six-dimension scoring, authentication assessment, data profiling, live API validation, and ingestion recommendation — producing a persistent Source Evaluation Scorecard.
 
 ## Preamble
 
@@ -38,7 +38,28 @@ Gather basic source information:
 - Data format (JSON, CSV, Parquet, database tables, API responses)
 - Location (connection string, API base URL, S3 path)
 
-### Step 3: Source Classification
+### Step 3: Pricing & Cost
+
+Assess the source's pricing model and cost implications before investing in a full technical evaluation. A source that costs more than the business value it delivers should be flagged early.
+
+Refer to [pricing-models.md](references/pricing-models.md) for pricing model classification, billing unit disambiguation, common estimation pitfalls, and safeguards.
+
+Gather the following inputs, marking each as **confirmed** (operator verified against contract or billing dashboard) or **estimated** (derived from documentation or assumptions):
+
+| Input | What to Ask |
+|-------|------------|
+| Pricing model | "Is this source subscription, per-request, per-record, freemium, or free/open?" |
+| Current plan/tier | "What plan or contract tier is the team currently on?" — do not assume from public pricing |
+| Quota | "What are the monthly or daily request/record limits?" |
+| Cost per unit | "What is the cost per API call or per record at your expected volume?" |
+| Billing unit | "Is the billing unit per API call or per record returned?" — confirm explicitly |
+| Overage policy | "What happens when you exceed the quota — hard stop, overage charges, or throttling?" |
+
+**For free/open sources:** Note the pricing model as "free/open" and skip cost estimation. Rate limits and terms of service may still apply — capture these in Access Complexity (Step 5).
+
+**Pipeline cost estimation** is deferred to Step 9 (Ingestion Recommendation), where the refresh cadence and request volume are known.
+
+### Step 4: Source Classification
 
 Classify the source into one of four types. Classification constrains available ingestion methods — this is not a free choice.
 
@@ -51,7 +72,7 @@ Refer to [source-classification-matrix.md](references/source-classification-matr
 | SaaS API | Salesforce, Stripe, HubSpot |
 | File-Based | CSV/JSON via SFTP, S3 |
 
-### Step 4: Six-Dimension Assessment
+### Step 5: Six-Dimension Assessment
 
 Score the source across six dimensions (1-5 scale). For each dimension, gather evidence from the user and assign a score.
 
@@ -68,7 +89,7 @@ Refer to [six-dimension-framework.md](references/six-dimension-framework.md) for
 
 **Schema stability warning:** Schema drift causes 7.8% of all data quality incidents, with 27% compounding per percentage-point increase in drift rate. SaaS APIs are the highest-risk type. Sources scoring 1-2 on schema stability require defensive pipeline design.
 
-### Step 5: Authentication & Credential Management
+### Step 6: Authentication & Credential Management
 
 Document the authentication mechanism and assess credential management practices.
 
@@ -82,7 +103,7 @@ Gather:
 
 **Production standard:** Service principals with OAuth M2M (1h tokens). Any token lasting months is a liability.
 
-### Step 6: Data Profiling
+### Step 7: Data Profiling
 
 If the user can provide sample data (CSV, JSON, or Parquet file), run the profiling script:
 
@@ -136,7 +157,7 @@ Map profiling results to quality dimension baselines:
 - Values within ranges/patterns → validity baseline
 - Cross-field checks → consistency baseline
 
-### Step 7: Ingestion Recommendation
+### Step 9: Ingestion Recommendation
 
 Based on classification and dimension scores, recommend an ingestion approach.
 
@@ -151,7 +172,22 @@ Refer to [source-classification-matrix.md](references/source-classification-matr
 
 **Critical:** dlt is a polling/extraction tool, not CDC. It does not read transaction logs. If log-based CDC is needed for high-frequency transactional sources, recommend Debezium or platform-native CDC instead of dlt.
 
-### Step 8: Re-Profiling Cadence
+#### Pipeline Cost Estimate
+
+If the source has a priced pricing model (from Step 3), calculate the estimated pipeline cost now that the ingestion approach and refresh cadence are known.
+
+Show the formula with actual values so the operator can verify each input:
+
+```
+requests_per_run × runs_per_month × cost_per_request = monthly_cost
+monthly_cost × 12 = annual_cost
+```
+
+Label each input as **confirmed** or **estimated**. If the estimated monthly usage exceeds the current plan's quota, flag it: the team may need a tier upgrade or will incur overage charges.
+
+Skip this subsection for free/open sources.
+
+### Step 10: Re-Profiling Cadence
 
 Set the re-profiling schedule based on the schema stability score:
 
@@ -163,7 +199,7 @@ Set the re-profiling schedule based on the schema stability score:
 
 Note the baseline profiling date and next scheduled profiling date. Profiling is continuous, not one-time.
 
-### Step 9: Generate Scorecard
+### Step 11: Generate Scorecard
 
 Produce the Source Evaluation Scorecard artifact using the template structure from [source-scorecard.md](assets/source-scorecard.md).
 
@@ -177,7 +213,7 @@ If updating an existing artifact:
 - Update `last_modified`
 - Add a changelog entry describing what changed
 
-### Step 10: Next Steps
+### Step 12: Next Steps
 
 End the scorecard with a "Next Steps" section recommending downstream skills:
 
