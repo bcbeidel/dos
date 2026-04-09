@@ -68,15 +68,15 @@ Baseline quality across DAMA dimensions from profiling results.
 
 ### 6. Access Complexity
 
-Authentication, authorization, and operational overhead. Access problems are the most common onboarding blocker.
+Authentication, authorization, operational overhead, and cost. Access problems are the most common onboarding blocker. Pricing complexity (opaque billing, strict quotas, expensive per-record costs) adds operational risk — factor it in.
 
 | Score | Criteria |
 |:-----:|----------|
-| 5 | Service account with read access, no rate limits, standard auth |
-| 4 | OAuth M2M or API key, reasonable rate limits (> 1000 req/min) |
-| 3 | OAuth with token refresh, moderate rate limits, or per-endpoint auth differences |
-| 2 | IP allowlisting + VPN + multi-step auth, or strict rate limits (< 100 req/min) |
-| 1 | Manual approval workflows, complex token chains, undocumented auth, or no API auth available |
+| 5 | Service account with read access, no rate limits, standard auth, free or simple subscription pricing |
+| 4 | OAuth M2M or API key, reasonable rate limits (> 1000 req/min), predictable pricing |
+| 3 | OAuth with token refresh, moderate rate limits, or per-endpoint auth differences; per-request pricing with clear billing unit |
+| 2 | IP allowlisting + VPN + multi-step auth, or strict rate limits (< 100 req/min); expensive per-record pricing or strict quotas requiring tier management |
+| 1 | Manual approval workflows, complex token chains, undocumented auth, or no API auth available; opaque billing or usage-based pricing with overage charges |
 
 ## Composite Score
 
