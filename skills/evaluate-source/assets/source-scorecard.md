@@ -73,7 +73,20 @@ A single source may contain multiple datasets (e.g., tables in a database, endpo
 ## Data Profiling Results
 
 **Profiling date:** {{date}}
-**Sample size:** {{row count and sampling method if not full dataset}}
+
+### Sampling Provenance
+
+| Field | Value |
+|-------|-------|
+| **Sample size** | {{row count}} |
+| **Total population** | {{total rows in source, or "unknown"}} |
+| **Sample coverage** | {{pct of total, or "full scan"}} |
+| **Sampling method** | {{full scan / first N rows / stratified pages / random}} |
+| **Pages sampled** | {{for paginated APIs: which offsets/pages, or "N/A"}} |
+
+{{If the sample is not a full scan, include a sampling caveat:}}
+
+> **Sampling caveat:** {{description of any representativeness concerns — e.g., "First 500 records from an API sorted alphabetically by station ID. Distribution metrics are illustrative of value ranges, not population proportions. Re-profile after first full production load."}}
 
 Repeat the profiling sections below for each dataset in this source. For sources with a single dataset, use one section.
 

@@ -61,6 +61,40 @@ Examines connections across columns and tables.
 | Referential integrity rate | Integrity | `matched_fk / total_fk` |
 | Freshness of latest timestamp | Timeliness | `now - max(updated_at)` |
 
+## Sampling & Representativeness
+
+Profiling results are only as good as the data profiled. A biased sample produces misleading baselines.
+
+### When to suspect a non-representative sample
+
+| Signal | Risk |
+|--------|------|
+| Row count is a round number (500, 1000, 5000) | Likely a `--limit` flag — source ordering may cluster edge cases |
+| Sample is <1% of total population | Distribution metrics may not reflect population proportions |
+| Source API returns deterministic order (alphabetical, by ID, by date) | First-page samples over-represent one segment |
+| All enrichment/derived fields are null | Sample may hit un-enriched records (geographic or temporal bias) |
+
+### Sampling strategies for paginated APIs
+
+| Strategy | When to Use |
+|----------|------------|
+| First page only | Quick schema check — **not for distribution baselines** |
+| First + middle + last page | Minimum viable representative sample |
+| Stratified by parameter (geography, type, date range) | API has categorical distribution; each category needs representation |
+| Full extraction with `--limit` on processing | Large APIs where full extraction is feasible but analysis is expensive |
+
+**Minimum sample size:** 100 records for baseline profiling. Below 100, flag the profile as insufficient for distribution metrics.
+
+### Recording sampling provenance
+
+Every profile should record:
+- **Sample size** — how many rows were profiled
+- **Total population** — how many rows exist in the source (if known)
+- **Sampling method** — full scan, first N rows, stratified pages, random
+- **Warnings** — any caveats about representativeness
+
+The profiling script accepts `--sample-of N` to record total population and automatically flags suspicious sample sizes (round numbers, small fractions).
+
 ## Re-Profiling Cadence
 
 | Schema Stability | Recommended Cadence |

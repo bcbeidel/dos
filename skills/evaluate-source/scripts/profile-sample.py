@@ -1,361 +1,331 @@
 #!/usr/bin/env python3
-"""Profile a sample data file and output structured markdown tables.
+"""Profile a data file using DuckDB and output structured results.
 
-Accepts CSV, JSON (newline-delimited or array), or Parquet files.
-Uses Python stdlib for CSV/JSON and DuckDB for Parquet and heavier computation.
+DuckDB handles all file formats and statistics computation natively.
+The script produces a structured profile dict, then renders it as
+markdown (stdout) or JSON (--json flag).
 
 Usage:
     python profile-sample.py <file_path> [--format csv|json|parquet]
+    python profile-sample.py <file_path> --json
+    python profile-sample.py <file_path> --json --output profile.json
 
 Output:
-    Markdown tables to stdout covering:
-    - Summary statistics (row count, column count)
-    - Column inventory (name, inferred type, nullable)
-    - Content metrics per column (null count, null rate, distinct count,
-      uniqueness ratio, min, max)
+    Default: Markdown tables to stdout
+    --json:  JSON profile to stdout
+    --output: JSON profile to file, markdown to stdout
 """
 
 import argparse
-import csv
-import io
 import json
 import sys
+from datetime import date, datetime
 from pathlib import Path
+from typing import Optional
+
+try:
+    import duckdb
+except ImportError:
+    print("Error: DuckDB required. Install with: pip install duckdb", file=sys.stderr)
+    sys.exit(1)
+
+FORMATS = {
+    ".csv": "csv", ".tsv": "csv",
+    ".json": "json", ".jsonl": "json", ".ndjson": "json",
+    ".parquet": "parquet", ".pq": "parquet",
+}
+
+READERS = {
+    "csv": "read_csv('{path}', auto_detect=true)",
+    "json": "read_json('{path}', auto_detect=true)",
+    "parquet": "read_parquet('{path}')",
+}
+
+# DuckDB types that get numeric distribution stats
+NUMERIC_TYPES = {"TINYINT", "SMALLINT", "INTEGER", "BIGINT", "HUGEINT",
+                 "FLOAT", "DOUBLE", "DECIMAL", "UTINYINT", "USMALLINT",
+                 "UINTEGER", "UBIGINT"}
+
+# Cardinality threshold for frequent-item analysis
+CATEGORICAL_MAX_DISTINCT = 50
+CATEGORICAL_MAX_UNIQUENESS = 0.5
 
 
 def detect_format(path: Path) -> str:
-    """Detect file format from extension."""
-    suffix = path.suffix.lower()
-    format_map = {
-        ".csv": "csv",
-        ".tsv": "csv",
-        ".json": "json",
-        ".jsonl": "json",
-        ".ndjson": "json",
-        ".parquet": "parquet",
-        ".pq": "parquet",
-    }
-    fmt = format_map.get(suffix)
-    if fmt is None:
-        print(f"Error: Cannot detect format from extension '{suffix}'.", file=sys.stderr)
-        print("Supported: .csv, .tsv, .json, .jsonl, .ndjson, .parquet", file=sys.stderr)
+    fmt = FORMATS.get(path.suffix.lower())
+    if not fmt:
+        print(f"Error: Unknown extension '{path.suffix}'", file=sys.stderr)
         sys.exit(1)
     return fmt
 
 
-def load_csv(path: Path) -> list[dict]:
-    """Load CSV file into list of dicts."""
-    with open(path, newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        return list(reader)
+def profile(file_path: Path, fmt: str) -> dict:
+    """Build a structured profile using DuckDB native functions."""
+    con = duckdb.connect()
+    reader = READERS[fmt].format(path=file_path)
+    con.execute(f"CREATE TABLE source AS SELECT * FROM {reader}")
 
+    row_count = con.execute("SELECT count(*) FROM source").fetchone()[0]
+    if row_count == 0:
+        return {"dataset": {"row_count": 0, "column_count": 0}, "columns": {}}
 
-def load_json(path: Path) -> list[dict]:
-    """Load JSON file (array or newline-delimited) into list of dicts."""
-    text = path.read_text(encoding="utf-8").strip()
-    if text.startswith("["):
-        return json.loads(text)
-    # Newline-delimited JSON
-    return [json.loads(line) for line in text.splitlines() if line.strip()]
+    # SUMMARIZE: one statement for base stats on every column
+    summary = con.execute("SUMMARIZE source").fetchall()
+    col_names = [desc[0] for desc in con.execute("SUMMARIZE source").description]
+    summary_dicts = [dict(zip(col_names, row)) for row in summary]
 
+    columns = {}
+    for row in summary_dicts:
+        name = row["column_name"]
+        col_type = row["column_type"]
+        count = int(row["count"])
+        null_pct = float(row["null_percentage"])
+        approx_unique = int(row["approx_unique"])
 
-def load_with_duckdb(path: Path, fmt: str) -> list[dict]:
-    """Load file using DuckDB for Parquet support and heavier computation."""
-    try:
-        import duckdb
-    except ImportError:
-        print("Error: DuckDB is required for Parquet files.", file=sys.stderr)
-        print("Install with: pip install duckdb", file=sys.stderr)
-        sys.exit(1)
-
-    conn = duckdb.connect()
-    if fmt == "parquet":
-        query = f"SELECT * FROM read_parquet('{path}')"
-    elif fmt == "csv":
-        query = f"SELECT * FROM read_csv('{path}', auto_detect=true)"
-    elif fmt == "json":
-        query = f"SELECT * FROM read_json('{path}', auto_detect=true)"
-    else:
-        print(f"Error: Unsupported format '{fmt}' for DuckDB.", file=sys.stderr)
-        sys.exit(1)
-
-    result = conn.execute(query)
-    columns = [desc[0] for desc in result.description]
-    rows = result.fetchall()
-    return [dict(zip(columns, row)) for row in rows]
-
-
-def infer_type(values: list) -> str:
-    """Infer the dominant type from a list of values."""
-    type_counts: dict[str, int] = {}
-    for v in values:
-        if v is None or (isinstance(v, str) and v.strip() == ""):
-            continue
-        if isinstance(v, bool):
-            t = "boolean"
-        elif isinstance(v, int):
-            t = "integer"
-        elif isinstance(v, float):
-            t = "float"
-        elif isinstance(v, str):
-            # Try to detect numeric strings
-            try:
-                int(v)
-                t = "integer"
-            except (ValueError, TypeError):
-                try:
-                    float(v)
-                    t = "float"
-                except (ValueError, TypeError):
-                    t = "string"
-        else:
-            t = type(v).__name__
-        type_counts[t] = type_counts.get(t, 0) + 1
-
-    if not type_counts:
-        return "unknown"
-    return max(type_counts, key=lambda k: type_counts[k])
-
-
-def compute_metrics(rows: list[dict], columns: list[str]) -> dict:
-    """Compute profiling metrics for each column."""
-    total = len(rows)
-    metrics = {}
-
-    for col in columns:
-        values = [row.get(col) for row in rows]
-        null_count = sum(
-            1 for v in values if v is None or (isinstance(v, str) and v.strip() == "")
-        )
-        non_null = [
-            v for v in values if v is not None and not (isinstance(v, str) and v.strip() == "")
-        ]
-        distinct_values = set()
-        for v in non_null:
-            if isinstance(v, (list, dict)):
-                distinct_values.add(str(v))
-            else:
-                distinct_values.add(v)
-        distinct_count = len(distinct_values)
-
-        # Min/max for comparable types
-        min_val = None
-        max_val = None
-        if non_null:
-            try:
-                comparable = sorted(non_null)
-                min_val = comparable[0]
-                max_val = comparable[-1]
-            except TypeError:
-                pass
-
-        # Numeric distribution metrics
-        numeric_stats = None
-        col_type = infer_type(values)
-        if col_type in ("integer", "float"):
-            nums = []
-            for v in non_null:
-                try:
-                    nums.append(float(v))
-                except (ValueError, TypeError):
-                    pass
-            if nums:
-                nums_sorted = sorted(nums)
-                n = len(nums_sorted)
-                mean = sum(nums_sorted) / n
-                variance = sum((x - mean) ** 2 for x in nums_sorted) / n
-                stddev = variance ** 0.5
-
-                def percentile(data: list[float], p: float) -> float:
-                    k = (len(data) - 1) * (p / 100)
-                    f = int(k)
-                    c = f + 1 if f + 1 < len(data) else f
-                    d = k - f
-                    return data[f] + d * (data[c] - data[f])
-
-                p25 = percentile(nums_sorted, 25)
-                p50 = percentile(nums_sorted, 50)
-                p75 = percentile(nums_sorted, 75)
-                iqr = p75 - p25
-
-                # Skewness (Fisher-Pearson)
-                skewness = None
-                if n >= 3 and stddev > 0:
-                    skewness = (
-                        sum((x - mean) ** 3 for x in nums_sorted)
-                        / (n * stddev ** 3)
-                    )
-
-                numeric_stats = {
-                    "mean": mean,
-                    "stddev": stddev,
-                    "p25": p25,
-                    "median": p50,
-                    "p75": p75,
-                    "iqr": iqr,
-                    "skewness": skewness,
-                }
-
-        # Value frequencies for low-cardinality (categorical) columns
-        # Categorical if: low uniqueness ratio AND not a unique identifier
-        top_values = None
-        uniqueness = distinct_count / total if total > 0 else 1
-        is_categorical = (
-            distinct_count > 0
-            and uniqueness < 0.5
-            and distinct_count <= 50
-        )
-        if is_categorical:
-            freq: dict[str, int] = {}
-            for v in non_null:
-                key = str(v)
-                freq[key] = freq.get(key, 0) + 1
-            sorted_freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
-            top_values = sorted_freq[:10]  # Top 10 values
-
-        metrics[col] = {
-            "inferred_type": col_type,
-            "nullable": null_count > 0,
-            "null_count": null_count,
-            "null_rate": f"{null_count / total:.1%}" if total > 0 else "N/A",
-            "distinct_count": distinct_count,
-            "uniqueness_ratio": (
-                f"{distinct_count / total:.3f}" if total > 0 else "N/A"
-            ),
-            "min": min_val,
-            "max": max_val,
-            "numeric_stats": numeric_stats,
-            "is_categorical": is_categorical,
-            "top_values": top_values,
+        entry = {
+            "type": col_type,
+            "count": count,
+            "null_count": round(null_pct * count / 100),
+            "null_pct": round(null_pct, 2),
+            "approx_unique": approx_unique,
+            "uniqueness_ratio": round(min(approx_unique / count, 1.0), 4) if count > 0 else None,
+            "min": _safe_str(row["min"]),
+            "max": _safe_str(row["max"]),
         }
 
-    return metrics
+        # Numeric columns: extended distribution stats
+        base_type = col_type.split("(")[0].upper()
+        if base_type in NUMERIC_TYPES and row["std"] is not None:
+            ext = con.execute(f"""
+                SELECT
+                    round(skewness("{name}"), 4),
+                    round(kurtosis("{name}"), 4)
+                FROM source
+            """).fetchone()
+            q25 = _safe_float(row["q25"])
+            q75 = _safe_float(row["q75"])
+            entry.update({
+                "mean": _safe_float(row["avg"]),
+                "stddev": _safe_float(row["std"]),
+                "q25": q25,
+                "median": _safe_float(row["q50"]),
+                "q75": q75,
+                "iqr": round(q75 - q25, 4) if q25 is not None and q75 is not None else None,
+                "skewness": _safe_float(ext[0]),
+                "kurtosis": _safe_float(ext[1]),
+            })
+
+        # Low-cardinality columns: frequent items
+        if (approx_unique <= CATEGORICAL_MAX_DISTINCT
+                and count > 0
+                and approx_unique / count < CATEGORICAL_MAX_UNIQUENESS):
+            freq = con.execute(f"""
+                SELECT "{name}" as value, count(*) as freq,
+                       round(count(*) * 100.0 / {count}, 2) as pct
+                FROM source WHERE "{name}" IS NOT NULL
+                GROUP BY "{name}" ORDER BY freq DESC LIMIT 10
+            """).fetchall()
+            entry["frequent_items"] = [
+                {"value": str(r[0]), "frequency": int(r[1]), "pct": float(r[2])}
+                for r in freq
+            ]
+
+        columns[name] = entry
+
+    # Key candidates: columns that are unique and fully non-null
+    key_candidates = [
+        name for name, col in columns.items()
+        if col["null_pct"] == 0.0
+        and col["uniqueness_ratio"] is not None
+        and col["uniqueness_ratio"] >= 0.99
+    ]
+
+    return {
+        "dataset": {"row_count": row_count, "column_count": len(columns)},
+        "columns": columns,
+        "key_candidates": key_candidates,
+    }
 
 
-def format_value(v) -> str:
-    """Format a value for markdown output."""
-    if v is None:
-        return ""
-    if isinstance(v, float):
-        return f"{v:.4g}"
-    return str(v)
+def _safe_str(val) -> Optional[str]:
+    if val is None:
+        return None
+    return str(val)
 
 
-def print_report(rows: list[dict], columns: list[str], file_path: str) -> None:
-    """Print the profiling report as markdown."""
-    total = len(rows)
-    metrics = compute_metrics(rows, columns)
+def _safe_float(val) -> Optional[float]:
+    if val is None:
+        return None
+    try:
+        return round(float(val), 4)
+    except (ValueError, TypeError):
+        return None
 
-    print(f"# Data Profile: `{file_path}`\n")
 
-    # Summary
-    print("## Summary\n")
-    print(f"| Metric | Value |")
-    print(f"|--------|-------|")
-    print(f"| **Row count** | {total:,} |")
-    print(f"| **Column count** | {len(columns)} |")
-    print()
+# ---------------------------------------------------------------------------
+# Markdown renderer
+# ---------------------------------------------------------------------------
+
+def render_markdown(prof: dict, file_path: str) -> str:
+    lines = []
+    ds = prof["dataset"]
+    cols = prof["columns"]
+
+    lines.append(f"# Data Profile: `{file_path}`\n")
+    lines.append("| Metric | Value |")
+    lines.append("|--------|-------|")
+    lines.append(f"| **Row count** | {ds['row_count']:,} |")
+    lines.append(f"| **Column count** | {ds['column_count']} |")
+
+    sampling = ds.get("sampling", {})
+    if sampling.get("total_population"):
+        lines.append(f"| **Total population** | {sampling['total_population']:,} |")
+        pct = round(ds['row_count'] * 100 / sampling['total_population'], 1)
+        lines.append(f"| **Sample coverage** | {pct}% |")
+    lines.append("")
+
+    # Sampling warnings
+    if sampling.get("warnings"):
+        lines.append("> **Sampling caveat**")
+        for w in sampling["warnings"]:
+            lines.append(f"> {w}")
+        lines.append("")
 
     # Column inventory
-    print("## Column Inventory\n")
-    print("| # | Column | Inferred Type | Nullable |")
-    print("|--:|--------|---------------|:--------:|")
-    for i, col in enumerate(columns, 1):
-        m = metrics[col]
-        nullable = "yes" if m["nullable"] else "no"
-        print(f"| {i} | `{col}` | {m['inferred_type']} | {nullable} |")
-    print()
+    lines.append("## Column Inventory\n")
+    lines.append("| # | Column | Type | Nullable |")
+    lines.append("|--:|--------|------|:--------:|")
+    for i, (name, col) in enumerate(cols.items(), 1):
+        nullable = "yes" if col["null_count"] > 0 else "no"
+        lines.append(f"| {i} | `{name}` | {col['type']} | {nullable} |")
+    lines.append("")
 
     # Content metrics
-    print("## Content Metrics\n")
-    print(
-        "| Column | Null Count | Null Rate | Distinct Count | Uniqueness Ratio | Min | Max |"
-    )
-    print(
-        "|--------|:----------:|:---------:|:--------------:|:----------------:|-----|-----|"
-    )
-    for col in columns:
-        m = metrics[col]
-        print(
-            f"| `{col}` | {m['null_count']} | {m['null_rate']} "
-            f"| {m['distinct_count']} | {m['uniqueness_ratio']} "
-            f"| {format_value(m['min'])} | {format_value(m['max'])} |"
+    lines.append("## Content Metrics\n")
+    lines.append("| Column | Nulls | Null % | Distinct | Uniqueness | Min | Max |")
+    lines.append("|--------|------:|-------:|---------:|-----------:|-----|-----|")
+    for name, col in cols.items():
+        lines.append(
+            f"| `{name}` | {col['null_count']} | {col['null_pct']}% "
+            f"| {col['approx_unique']} | {col['uniqueness_ratio']} "
+            f"| {col['min'] or ''} | {col['max'] or ''} |"
         )
-    print()
+    lines.append("")
 
     # Numeric distribution
-    numeric_cols = [c for c in columns if metrics[c]["numeric_stats"] is not None]
-    if numeric_cols:
-        print("## Numeric Distribution\n")
-        print(
-            "| Column | Mean | Std Dev | P25 | Median | P75 | IQR | Skewness |"
-        )
-        print(
-            "|--------|-----:|--------:|----:|-------:|----:|----:|---------:|"
-        )
-        for col in numeric_cols:
-            s = metrics[col]["numeric_stats"]
-            skew = format_value(s["skewness"]) if s["skewness"] is not None else "N/A"
-            print(
-                f"| `{col}` | {format_value(s['mean'])} | {format_value(s['stddev'])} "
-                f"| {format_value(s['p25'])} | {format_value(s['median'])} "
-                f"| {format_value(s['p75'])} | {format_value(s['iqr'])} "
-                f"| {skew} |"
+    num = {n: c for n, c in cols.items() if "mean" in c}
+    if num:
+        lines.append("## Numeric Distribution\n")
+        lines.append("| Column | Mean | Std Dev | Q25 | Median | Q75 | IQR | Skew |")
+        lines.append("|--------|-----:|--------:|----:|-------:|----:|----:|-----:|")
+        for name, col in num.items():
+            f = lambda v: f"{v:.4g}" if v is not None else "—"
+            lines.append(
+                f"| `{name}` | {f(col['mean'])} | {f(col['stddev'])} "
+                f"| {f(col['q25'])} | {f(col['median'])} "
+                f"| {f(col['q75'])} | {f(col['iqr'])} | {f(col['skewness'])} |"
             )
-        print()
+        lines.append("")
 
     # Categorical analysis
-    cat_cols = [c for c in columns if metrics[c]["is_categorical"]]
-    if cat_cols:
-        print("## Categorical Analysis\n")
-        print(
-            "Low-cardinality columns (<50% uniqueness ratio). "
-            "Top values by frequency:\n"
-        )
-        for col in cat_cols:
-            m = metrics[col]
-            print(f"### `{col}` — {m['distinct_count']} distinct values\n")
-            print("| Value | Count | Frequency |")
-            print("|-------|------:|----------:|")
-            for val, count in m["top_values"]:
-                freq_pct = f"{count / total:.1%}" if total > 0 else "N/A"
-                print(f"| {val} | {count:,} | {freq_pct} |")
-            print()
+    cat = {n: c for n, c in cols.items() if "frequent_items" in c}
+    if cat:
+        lines.append("## Categorical Analysis\n")
+        for name, col in cat.items():
+            lines.append(f"### `{name}` — {col['approx_unique']} distinct values\n")
+            lines.append("| Value | Count | % |")
+            lines.append("|-------|------:|--:|")
+            for item in col["frequent_items"]:
+                lines.append(f"| {item['value']} | {item['frequency']:,} | {item['pct']}% |")
+            lines.append("")
 
     # Key candidates
-    print("## Key Candidates\n")
-    candidates = [
-        col
-        for col in columns
-        if metrics[col]["distinct_count"] == total and not metrics[col]["nullable"]
-    ]
-    if candidates:
-        for col in candidates:
-            print(f"- `{col}` — unique and non-null across all {total:,} rows")
+    lines.append("## Key Candidates\n")
+    keys = prof.get("key_candidates", [])
+    if keys:
+        for name in keys:
+            lines.append(f"- `{name}` — unique and non-null")
     else:
-        print("No columns are both unique and non-null across all rows.")
-    print()
+        lines.append("No columns are both unique and non-null across all rows.")
+    lines.append("")
+
+    return "\n".join(lines)
 
 
-def main() -> None:
+# ---------------------------------------------------------------------------
+# Sampling metadata
+# ---------------------------------------------------------------------------
+
+# Row counts that suggest a --limit flag was used during extraction
+_ROUND_THRESHOLDS = {10, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500,
+                     5000, 10000, 25000, 50000, 100000}
+
+
+def _build_sampling_metadata(row_count: int, total_population: Optional[int]) -> dict:
+    """Build sampling provenance metadata for the profile."""
+    sampling = {
+        "sample_size": row_count,
+        "total_population": total_population,
+        "is_complete": total_population is None or row_count >= total_population,
+    }
+
+    warnings = []
+
+    # Detect suspiciously round row counts that suggest a --limit flag
+    if row_count in _ROUND_THRESHOLDS:
+        warnings.append(
+            f"Row count ({row_count}) is a round number — may indicate a "
+            f"--limit flag was used during extraction. If the source API "
+            f"returns records in a deterministic order (e.g., alphabetical, "
+            f"by ID), this sample may not be representative of the full "
+            f"population. Distribution metrics should be treated as "
+            f"illustrative of value ranges, not population proportions."
+        )
+
+    # Warn if explicitly a partial sample
+    if total_population is not None and row_count < total_population:
+        pct = round(row_count * 100 / total_population, 1)
+        warnings.append(
+            f"This profile covers {pct}% of the total population "
+            f"({row_count:,} of {total_population:,} records). "
+            f"Re-profile after the first full production load."
+        )
+
+    if warnings:
+        sampling["warnings"] = warnings
+
+    return sampling
+
+
+# ---------------------------------------------------------------------------
+# JSON encoder for dates and other non-serializable types
+# ---------------------------------------------------------------------------
+
+class ProfileEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (date, datetime)):
+            return obj.isoformat()
+        return super().default(obj)
+
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+def main():
     parser = argparse.ArgumentParser(
-        description="Profile a sample data file and output structured markdown tables.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=(
-            "Supported formats: CSV (.csv, .tsv), JSON (.json, .jsonl, .ndjson), "
-            "Parquet (.parquet, .pq)\n\n"
-            "Examples:\n"
-            "  python profile-sample.py data.csv\n"
-            "  python profile-sample.py events.jsonl\n"
-            "  python profile-sample.py warehouse.parquet --format parquet\n"
-        ),
+        description="Profile a data file using DuckDB.",
+        epilog="Formats: CSV (.csv/.tsv), JSON (.json/.jsonl/.ndjson), Parquet (.parquet/.pq)",
     )
-    parser.add_argument("file", help="Path to the data file to profile")
-    parser.add_argument(
-        "--format",
-        choices=["csv", "json", "parquet"],
-        help="File format (auto-detected from extension if omitted)",
-    )
+    parser.add_argument("file", help="Path to the data file")
+    parser.add_argument("--format", choices=["csv", "json", "parquet"],
+                        help="File format (auto-detected from extension if omitted)")
+    parser.add_argument("--json", action="store_true",
+                        help="Output JSON profile instead of markdown")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Write JSON profile to FILE (markdown still goes to stdout)")
+    parser.add_argument("--sample-of", type=int, metavar="N",
+                        help="Total population size (if this file is a sample, not the full dataset)")
     args = parser.parse_args()
 
     path = Path(args.file)
@@ -364,24 +334,25 @@ def main() -> None:
         sys.exit(1)
 
     fmt = args.format or detect_format(path)
+    result = profile(path, fmt)
 
-    # Use DuckDB for parquet; stdlib for csv/json
-    if fmt == "parquet":
-        rows = load_with_duckdb(path, fmt)
-    elif fmt == "csv":
-        rows = load_csv(path)
-    elif fmt == "json":
-        rows = load_json(path)
-    else:
-        print(f"Error: Unsupported format: {fmt}", file=sys.stderr)
-        sys.exit(1)
+    # Add sampling metadata
+    row_count = result["dataset"]["row_count"]
+    sampling = _build_sampling_metadata(row_count, args.sample_of)
+    result["dataset"]["sampling"] = sampling
 
-    if not rows:
+    if row_count == 0:
         print("Warning: File contains no data rows.", file=sys.stderr)
         sys.exit(0)
 
-    columns = list(rows[0].keys())
-    print_report(rows, columns, args.file)
+    if args.output:
+        with open(args.output, "w") as f:
+            json.dump(result, f, indent=2, cls=ProfileEncoder)
+
+    if args.json:
+        print(json.dumps(result, indent=2, cls=ProfileEncoder))
+    else:
+        print(render_markdown(result, args.file))
 
 
 if __name__ == "__main__":
