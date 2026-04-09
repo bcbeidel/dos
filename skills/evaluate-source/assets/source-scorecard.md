@@ -62,6 +62,35 @@ last_modified: {{date}}
 
 **Anti-patterns detected:** {{list any: static PATs, shared credentials, secrets in code, no rotation}}
 
+## Pricing & Cost
+
+### Pricing Inputs
+
+| Input | Value | Status |
+|-------|-------|:------:|
+| **Pricing Model** | {{subscription / per-request / per-record / freemium / free/open}} | {{confirmed / estimated}} |
+| **Current Plan/Tier** | {{actual contract or plan the team is on}} | {{confirmed / estimated}} |
+| **Quota** | {{monthly or daily request/record limits}} | {{confirmed / estimated}} |
+| **Cost per Unit** | {{cost at expected pipeline volume}} | {{confirmed / estimated}} |
+| **Billing Unit** | {{per API call / per record returned / per row / per request}} | {{confirmed / estimated}} |
+| **Overage Policy** | {{hard stop / overage charges / throttling / unlimited}} | {{confirmed / estimated}} |
+
+{{If pricing model is free/open, note "No cost assessment required" and skip the pipeline cost estimate.}}
+
+### Pipeline Cost Estimate
+
+| Input | Value | Status |
+|-------|------:|:------:|
+| Requests per run | {{count}} | {{confirmed / estimated}} |
+| Runs per month | {{count}} | {{confirmed / estimated}} |
+| Cost per request | {{amount}} | {{confirmed / estimated}} |
+| **Estimated monthly cost** | **{{requests_per_run × runs_per_month × cost_per_request}}** | |
+| **Estimated annual cost** | **{{monthly × 12}}** | |
+
+{{Show the formula with actual values so the operator can verify each input.}}
+
+{{If monthly cost exceeds quota, flag: "⚠ Estimated usage exceeds current plan quota. Tier upgrade or overage charges may apply."}}
+
 ## Datasets
 
 A single source may contain multiple datasets (e.g., tables in a database, endpoints in an API). List all datasets relevant to downstream data products. Each dataset gets its own profiling subsection below.
@@ -145,6 +174,19 @@ Low-cardinality columns (<50% uniqueness ratio) with value frequencies. Useful f
 | Uniqueness | {{pct unique on key candidates}} | Content profiling |
 | Validity | {{pct within expected ranges/patterns}} | Content profiling |
 | Consistency | {{cross-field consistency rate}} | Relationship profiling |
+
+### Live API Validation
+
+{{For SaaS API / REST sources only. Omit this section for Transactional DB, Event Stream, or File-Based sources.}}
+
+| Check | Result |
+|-------|--------|
+| **Validation performed** | {{yes / no / N/A (not an API source)}} |
+| **Single record by ID** | {{type mismatches found, or "wire format matches profile"}} |
+| **Batch from different parameter** | {{null rate divergence found, or "consistent with profiled baseline"}} |
+| **Profile comparison** | {{new/missing fields found, or "no structural differences"}} |
+
+**Corrections applied:** {{list any scorecard corrections made after live validation, or "none required"}}
 
 ## Ingestion Recommendation
 
