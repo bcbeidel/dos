@@ -19,6 +19,18 @@ Sources and their ingestion approaches. Classifications and recommendations draw
 |--------|---------------|----------|-------------------|----------------|----------------------|------------|
 | {{source-name}} | {{transactional DB / event stream / SaaS API / file-based}} | {{dataset list}} | {{full / incremental / CDC}} | {{column or N/A}} | {{e.g., 2 hours, daily}} | [evaluation](../../sources/{{source-name}}/evaluation.md) |
 
+## Cross-Pipeline Dependencies
+
+Models that join across staging domains introduce runtime dependencies on other pipelines. These must be explicitly ordered in the DAG or documented as first-time setup prerequisites.
+
+| Model / Join | Upstream Pipeline | Ordering Guarantee | Notes |
+|-------------|------------------|-------------------|-------|
+| {{e.g., int_noaa__stations_enriched joins stg_zipcode__zip_codes}} | {{e.g., run_zipcode_pipeline}} | {{DAG dependency / schedule ordering / manual}} | {{e.g., zipcode runs 3rd, noaa runs 15th}} |
+
+{{If no cross-pipeline dependencies: "No cross-pipeline dependencies identified. All staging models source from within this pipeline."}}
+
+**First-time setup checklist:** Before running this pipeline in a new environment, ensure these upstream pipelines have completed at least once: {{list or "N/A"}}.
+
 ## Layering Strategy
 
 **Approach:** {{medallion (Bronze/Silver/Gold) / 2-layer (staging+marts) / single-layer / domain-partitioned}}
