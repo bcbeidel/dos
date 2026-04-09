@@ -21,6 +21,11 @@ Before starting, establish context and validate inputs:
 
    If validation fails, report what's missing and suggest: "Run `/dos:evaluate-source` to create or complete the scorecard for this source." Do not proceed with code generation until the scorecard passes validation.
 
+   **Fallback:** If the script is not found, validate manually:
+   - Confirm `docs/sources/<source-name>/evaluation.md` exists
+   - Confirm it has valid YAML frontmatter with `name`, `artifact_type`, `version`, `status`
+   - Confirm it contains sections for Source Classification, Authentication, and Ingestion Recommendation
+
 3. **Read the scorecard.** Extract: source type, classification, auth mechanism, ingestion approach, dimension scores, and profiling baselines.
 
 4. **Optional input detection.** Ask which data product this source is for (if any). If a data product is named, check for:
@@ -29,7 +34,7 @@ Before starting, establish context and validate inputs:
 
    Report each as "available" or "not found — will proceed without enrichment."
 
-5. **Check for existing code.** Search the project for existing dlt pipeline code and dbt source definitions for this source. If code exists, read it, summarize the current state, and ask what's changing. Propose updates to align existing code with the current scorecard rather than regenerating from scratch. If no code exists, proceed with generation.
+5. **Check for existing code.** Search the project for existing dlt pipeline code and dbt source definitions for this source. If code exists, read it, summarize the current state, and scan for extraction boundary violations per [extraction-boundary-rules.md](references/extraction-boundary-rules.md). Report any violations found (raw-first violations, array fields under merge, cost-blind retry config) before asking what's changing. Propose updates to align existing code with the current scorecard rather than regenerating from scratch. If no code exists, proceed with generation.
 
 6. **Detect project layout.** Look for `dbt_project.yml` to determine where dbt source YAML should be placed. Ask the user for the dlt pipeline location if no convention is detectable from the project structure.
 
