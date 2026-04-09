@@ -55,9 +55,29 @@ Review the scorecard's recommended ingestion approach and validate it against dl
 
 If dlt is not appropriate, explain why and suggest alternatives. Do not generate dlt code for CDC use cases.
 
-### Step 2: Generate dlt Pipeline
+### Step 2: Verify Extraction Boundary
 
-Generate pipeline code matching the source classification and ingestion approach. Refer to [dlt-pipeline-patterns.md](references/dlt-pipeline-patterns.md) for write dispositions, merge strategies, incremental configuration, and type fidelity warnings.
+Before generating or modifying code, verify compliance with extraction boundary rules. Refer to [extraction-boundary-rules.md](references/extraction-boundary-rules.md) for the full rule set and [dlt-runtime-behaviors.md](references/dlt-runtime-behaviors.md) for runtime behavior checks.
+
+**Blocking checks** (must resolve before proceeding to code generation):
+
+| Check | How | Reference |
+|-------|-----|-----------|
+| Raw-first violation scan | Scan existing pipeline code for violation patterns: `model_dump()` calls, schema imports, field renames, enrichment logic in `processing_steps` | [extraction-boundary-rules.md](references/extraction-boundary-rules.md) §Violation Patterns |
+| Array field detection | Check if any source field can be a list/array AND write disposition is `merge` | [dlt-runtime-behaviors.md](references/dlt-runtime-behaviors.md) §Array Fields |
+| Cost-of-retry | For quota-billed APIs, calculate `retry_cost = api_calls_per_run × overage_price`. If >$10, present tradeoff before recommending `max_retries > 0` | [extraction-boundary-rules.md](references/extraction-boundary-rules.md) §Cost-of-Retry |
+
+**Advisory checks** (report findings, document in generated code):
+
+| Check | How | Reference |
+|-------|-----|-----------|
+| Schema cache impact | If modifying existing pipeline code that removes or renames fields, warn about dlt schema cache | [dlt-runtime-behaviors.md](references/dlt-runtime-behaviors.md) §Schema Caching |
+
+Report all findings before proceeding. Blocking findings must be resolved — either by routing the logic to the correct layer (staging/intermediate via `implement-models`) or by applying the documented remediation.
+
+### Step 3: Generate dlt Pipeline
+
+Generate pipeline code matching the source classification and ingestion approach. Refer to [dlt-pipeline-patterns.md](references/dlt-pipeline-patterns.md) for write dispositions, merge strategies, incremental configuration, type fidelity warnings, and cost-aware retry configuration. Refer to [dlt-runtime-behaviors.md](references/dlt-runtime-behaviors.md) for array field handling under merge (declare as `text` + serialize to JSON) and schema cache reset warnings to include in generated code comments.
 
 For each source, generate:
 
@@ -74,15 +94,6 @@ For each source, generate:
    - Cursor field (e.g., `updated_at`)
    - Merge key (e.g., `id`)
    - Initial value for first run
-
-### Step 3: Flag dlt Configuration Pitfalls
-
-Surface these known issues in comments within the generated code or as warnings to the user. Refer to [dlt-pipeline-patterns.md](references/dlt-pipeline-patterns.md) for full details.
-
-- **Bug #2782:** `dlt.config.get()` reads from `secrets.toml` instead of `config.toml`. Test config/secrets separation explicitly.
-- **Silent env var failures:** Double-underscore nesting errors in env var names produce no warning. dlt silently falls back to TOML.
-- **Silent destination fallback:** Misnamed destinations silently fall back to shorthand type string.
-- **Nested data divergence at `max_table_nesting=0`:** Behavior differs silently across DuckDB, Snowflake, Databricks, and ClickHouse. Test on the target platform.
 
 ### Step 4: Generate dbt Source YAML
 
