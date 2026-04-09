@@ -2,6 +2,12 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.3.2] — 2026-04-09
+
+### Added
+- `implement-models` detects composite `unique_key` lists in existing and new models, recommends `dbt_utils.generate_surrogate_key` with the original columns kept as a `unique_combination_of_columns` validation test (#28)
+- Surrogate Keys for Composite Keys section in `dbt-model-patterns.md` with SQL pattern, tradeoff table, and validation test example
+
 ## [0.3.1] — 2026-04-09
 
 ### Fixed
