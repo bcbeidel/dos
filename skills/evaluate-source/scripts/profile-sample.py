@@ -176,7 +176,20 @@ def render_markdown(prof: dict, file_path: str) -> str:
     lines.append("|--------|-------|")
     lines.append(f"| **Row count** | {ds['row_count']:,} |")
     lines.append(f"| **Column count** | {ds['column_count']} |")
+
+    sampling = ds.get("sampling", {})
+    if sampling.get("total_population"):
+        lines.append(f"| **Total population** | {sampling['total_population']:,} |")
+        pct = round(ds['row_count'] * 100 / sampling['total_population'], 1)
+        lines.append(f"| **Sample coverage** | {pct}% |")
     lines.append("")
+
+    # Sampling warnings
+    if sampling.get("warnings"):
+        lines.append("> **Sampling caveat**")
+        for w in sampling["warnings"]:
+            lines.append(f"> {w}")
+        lines.append("")
 
     # Column inventory
     lines.append("## Column Inventory\n")
@@ -240,6 +253,51 @@ def render_markdown(prof: dict, file_path: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Sampling metadata
+# ---------------------------------------------------------------------------
+
+# Row counts that suggest a --limit flag was used during extraction
+_ROUND_THRESHOLDS = {10, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500,
+                     5000, 10000, 25000, 50000, 100000}
+
+
+def _build_sampling_metadata(row_count: int, total_population: Optional[int]) -> dict:
+    """Build sampling provenance metadata for the profile."""
+    sampling = {
+        "sample_size": row_count,
+        "total_population": total_population,
+        "is_complete": total_population is None or row_count >= total_population,
+    }
+
+    warnings = []
+
+    # Detect suspiciously round row counts that suggest a --limit flag
+    if row_count in _ROUND_THRESHOLDS:
+        warnings.append(
+            f"Row count ({row_count}) is a round number — may indicate a "
+            f"--limit flag was used during extraction. If the source API "
+            f"returns records in a deterministic order (e.g., alphabetical, "
+            f"by ID), this sample may not be representative of the full "
+            f"population. Distribution metrics should be treated as "
+            f"illustrative of value ranges, not population proportions."
+        )
+
+    # Warn if explicitly a partial sample
+    if total_population is not None and row_count < total_population:
+        pct = round(row_count * 100 / total_population, 1)
+        warnings.append(
+            f"This profile covers {pct}% of the total population "
+            f"({row_count:,} of {total_population:,} records). "
+            f"Re-profile after the first full production load."
+        )
+
+    if warnings:
+        sampling["warnings"] = warnings
+
+    return sampling
+
+
+# ---------------------------------------------------------------------------
 # JSON encoder for dates and other non-serializable types
 # ---------------------------------------------------------------------------
 
@@ -266,6 +324,8 @@ def main():
                         help="Output JSON profile instead of markdown")
     parser.add_argument("--output", "-o", metavar="FILE",
                         help="Write JSON profile to FILE (markdown still goes to stdout)")
+    parser.add_argument("--sample-of", type=int, metavar="N",
+                        help="Total population size (if this file is a sample, not the full dataset)")
     args = parser.parse_args()
 
     path = Path(args.file)
@@ -276,7 +336,12 @@ def main():
     fmt = args.format or detect_format(path)
     result = profile(path, fmt)
 
-    if result["dataset"]["row_count"] == 0:
+    # Add sampling metadata
+    row_count = result["dataset"]["row_count"]
+    sampling = _build_sampling_metadata(row_count, args.sample_of)
+    result["dataset"]["sampling"] = sampling
+
+    if row_count == 0:
         print("Warning: File contains no data rows.", file=sys.stderr)
         sys.exit(0)
 

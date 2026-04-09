@@ -90,14 +90,39 @@ If the user can provide sample data (CSV, JSON, or Parquet file), run the profil
 python ${CLAUDE_SKILL_DIR}/scripts/profile-sample.py <file_path>
 ```
 
-The script outputs markdown tables covering column inventory, content metrics, and key candidates.
+The script outputs markdown tables covering column inventory, content metrics, and key candidates. Use `--json` to produce a machine-readable profile, or `--output profile.json` to write the JSON artifact alongside markdown output.
+
+If the sample is a subset of the full dataset, pass the total population size:
+
+```bash
+python ${CLAUDE_SKILL_DIR}/scripts/profile-sample.py <file_path> --sample-of 50000
+```
+
+The script will flag non-representative samples and include sampling provenance in the profile.
 
 If no sample data is available, gather profiling information through conversation:
 - Approximate row count and column count
 - Known null patterns or quality issues
 - Key candidates and relationships to other tables
 
-Refer to [profiling-metrics.md](references/profiling-metrics.md) for the three profiling types (structure, content, relationship) and the mapping from profiling results to quality dimension baselines.
+#### Sampling Assessment
+
+Before profiling, assess whether the sample data is representative. Ask:
+
+> "Was this data loaded with a row limit or filter? Does the source API return records in a deterministic order (e.g., alphabetical by ID, by geography, by date)?"
+
+If the answer is yes to either, the sample may be biased — distribution metrics should be treated as illustrative of value ranges, not population proportions.
+
+**For paginated REST APIs**, the first page is often not representative. If the API returns geographically or categorically distributed data:
+
+1. **Sample from multiple offsets** — request records from the first, middle, and last pages (e.g., offset 0, offset N/2, offset N-100) rather than only the first page.
+2. **Minimum sample size** — aim for at least 100 records for baseline profiling. Fewer than 100 records should be flagged in the profile.
+3. **Concat then profile** — save each page's response as a separate file, concatenate them, then profile the combined file. This produces a more representative baseline than profiling a single page.
+4. **Record sampling provenance** — note in the scorecard which pages/offsets were sampled, so the profile can be meaningfully compared to a future full-dataset profile.
+
+Refer to [profiling-metrics.md](references/profiling-metrics.md) for the three profiling types (structure, content, relationship), sampling representativeness guidance, and the mapping from profiling results to quality dimension baselines.
+
+#### Profiling Types
 
 Profile across all three types:
 
