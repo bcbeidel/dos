@@ -12,7 +12,7 @@
         "repo": "bcbeidel/dos"
       },
       "description": "Skills for facilitating data engineering work: evaluate sources, scope data products, define contracts, design pipelines, and review implementations.",
-      "version": "0.2.0",
+      "version": "0.3.1",
       "license": "MIT"
     }
   ]
