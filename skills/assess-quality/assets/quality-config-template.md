@@ -22,16 +22,16 @@ last_modified: {{date}}
 
 Selected dimensions with measurement methods and thresholds. Dimensions are chosen based on consumer needs and data characteristics -- not adopted wholesale from a framework.
 
-| Dimension | Measurement Method | Threshold (Green) | Threshold (Yellow) | Threshold (Red) |
-|-----------|-------------------|:-----------------:|:------------------:|:---------------:|
-| **Completeness** | `(total_rows - null_count) / total_rows` for required fields | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
-| **Accuracy** | Cross-reference against {{trusted source}} or statistical sampling | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
-| **Validity** | Regex pattern matching, range checks, accepted-value validation | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
-| **Uniqueness** | Duplicate row detection and primary key violation rate | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
-| **Consistency** | Cross-system comparison and referential integrity checks | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
-| **Timeliness** | Delta between event occurrence and data availability | <= {{minutes}} min | <= {{minutes}} min | > {{minutes}} min |
+| Dimension | Rule Type | Measurement Method | Threshold (Green) | Threshold (Yellow) | Threshold (Red) |
+|-----------|-----------|-------------------|:-----------------:|:------------------:|:---------------:|
+| **Completeness** | not-null | `(total_rows - null_count) / total_rows` for required fields | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
+| **Accuracy** | {{expression / aggregate-bound}} | Cross-reference against {{trusted source}} or statistical sampling | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
+| **Validity** | {{enum-membership / string-pattern / numeric-range / expression}} | {{measurement per rule type}} | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
+| **Uniqueness** | {{unique / unique-combination}} | Duplicate row detection and primary key violation rate | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
+| **Consistency** | {{referential-integrity / metric-stability}} | {{referential checks or run-over-run comparison}} | >= {{pct}}% | >= {{pct}}% | < {{pct}}% |
+| **Timeliness** | {{recency / freshness}} | Delta between event occurrence and data availability | <= {{minutes}} min | <= {{minutes}} min | > {{minutes}} min |
 
-**Note:** Select 4-10 dimensions relevant to this data product. Remove rows that do not apply. Add domain-specific dimensions as needed.
+**Note:** Select 4-10 dimensions relevant to this data product. Remove rows that do not apply. Add domain-specific dimensions as needed. Rule types use the taxonomy from `dbt-test-selection.md` -- downstream skills use the rule type to select the correct dbt test implementation.
 
 ## Scoring Method
 
