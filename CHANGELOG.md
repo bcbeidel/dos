@@ -2,6 +2,43 @@
 
 All notable changes to the dos plugin are documented here.
 
+## [0.4.0] — 2026-04-10
+
+First stable release. Collapses the 9-skill Discover→Scope→Design→Build→Verify chain into 4 skills, replaces the 6-file per-pipeline artifact structure with a single `data-product.md` living document, and eliminates artifact drift by making `data-product.md` the sole specification consumed by build-phase skills. Closes #23.
+
+### Breaking Changes
+
+- **Skill chain restructured**: 9 skills → 4 active skills. Any `/dos:` invocations using deprecated skill names will not route to replacement skills automatically.
+- **Artifact structure replaced**: the 6-file per-pipeline layout (`scope.md`, `contract.md`, `quality-config.md`, `pipeline-architecture.md`, `reviews/`) is replaced by a single `docs/data-products/<name>/data-product.md`. Existing artifacts under the old structure are not migrated automatically.
+- **`evaluate-source` renamed to `scope-source`**: invocations of `/dos:evaluate-source` must be updated to `/dos:scope-source`.
+- **`implement-models` replaced by `implement-data-product`**: invocations of `/dos:implement-models` must be updated to `/dos:implement-data-product`.
+
+### Added
+
+- `dos:scope-data-product` — fully rewritten to a 5-section workflow (Overview, Sources, Contract, Quality, Architecture) that populates a single `data-product.md` living document. Collapses `define-contract`, `assess-quality`, `design-pipeline`, and `select-model` into one skill with section-gated reference loading and cross-section consistency checks.
+- `dos:implement-data-product` — new build-phase skill that generates dbt models, schema YAMLs, tests, contract enforcement, and orchestration artifacts (Databricks Asset Bundles) from `data-product.md`. Replaces `implement-models`.
+- `data-product.md` asset template — living document with YAML frontmatter, 5 pending-marker sections, and a pre-populated Changelog scaffold.
+- `validate-data-product.py` — validation script (in both `implement-source/scripts/` and `implement-data-product/scripts/`) that checks file existence, frontmatter validity, `artifact_type`, and non-pending required sections. Exit 2 on failure with structured ERROR/FIX output.
+- Orchestration artifact generation in `implement-data-product` Step 9 — reads `tool::component.identifier` shorthands from the Architecture section to generate Databricks Asset Bundles job/pipeline resource blocks.
+- 15 reference files consolidated into `skills/scope-data-product/references/` (from `define-contract`, `assess-quality`, `design-pipeline`, `select-model`).
+
+### Changed
+
+- `dos:scope-source` (renamed from `evaluate-source`) — frontmatter `name` field updated; all other content preserved.
+- `dos:implement-source` — updated to validate `data-product.md` Sources section before code generation, read ingestion context from `data-product.md` instead of standalone `contract.md`/`scope.md`, and append Changelog entry to `data-product.md` on completion. Next-step suggestion updated from `review-pipeline` to `implement-data-product`.
+- `CLAUDE.md` skill chain table updated to reflect 4-skill architecture and `docs/data-products/<name>/data-product.md` output path.
+
+### Deprecated
+
+The following skills are retained with their reference files but marked `status: deprecated`. They will not receive further updates and may be removed in a future release.
+
+- `dos:define-contract` → replaced by `dos:scope-data-product` (Contract section)
+- `dos:assess-quality` → replaced by `dos:scope-data-product` (Quality section)
+- `dos:design-pipeline` → replaced by `dos:scope-data-product` (Architecture section)
+- `dos:select-model` → replaced by `dos:scope-data-product` (Architecture section)
+- `dos:review-pipeline` → absorbed into `dos:implement-data-product` and `dos:implement-source`
+- `dos:implement-models` → replaced by `dos:implement-data-product`
+
 ## [0.3.3] — 2026-04-09
 
 ### Added
