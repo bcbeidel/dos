@@ -1,7 +1,12 @@
 ---
 name: design-pipeline
 description: Architecture a data pipeline from source to serving layer. Produces a Pipeline Architecture document with per-source ingestion patterns, layering strategy, incremental loading with silent failure modes, idempotency strategy, schema evolution approach, and platform-specific considerations.
+status: deprecated
+deprecated_by: scope-data-product
 ---
+
+> **Deprecated.** This skill has been replaced by `/dos:scope-data-product`.
+> Reference files are preserved for migration. Do not invoke directly.
 
 # dos:design-pipeline
 

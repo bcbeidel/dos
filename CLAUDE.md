@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A Claude Code plugin (`dos`) with 9 skills covering the data engineering lifecycle: Discover → Scope → Design → Build → Verify. Skills are invoked as `/dos:<skill-name>` and produce persistent artifacts in `docs/`.
+A Claude Code plugin (`dos`) with 4 active skills covering the data engineering lifecycle: Discover → Scope → Build. Skills are invoked as `/dos:<skill-name>` and produce persistent artifacts in `docs/`.
 
 ## Project Structure
 
@@ -13,8 +13,8 @@ skills/<name>/           # Each skill is a directory
   assets/                # Output artifact templates (markdown with YAML frontmatter)
   scripts/               # Deterministic validation (Python, exit 0=pass, 2=fail)
 docs/
-  sources/               # Source evaluation scorecards (from evaluate-source)
-  data-products/<name>/  # Scope, contract, quality config, pipeline arch, reviews
+  sources/               # Source evaluation scorecards (from scope-source)
+  data-products/<name>/data-product.md  # Single living document: Overview, Sources, Contract, Quality, Architecture, Changelog
   context/               # 66 research-backed context files (authoring inputs, not runtime)
   designs/               # Design documents
   plans/                 # Implementation plans with task checkboxes
@@ -34,12 +34,11 @@ docs/
 ## Skill Chain
 
 | Phase | Skills | Output Location |
-|-------|--------|----------------|
-| Discover | `evaluate-source` | `docs/sources/<source>/` |
-| Scope | `scope-data-product` | `docs/data-products/<name>/` |
-| Design | `select-model`, `define-contract`, `assess-quality`, `design-pipeline` | `docs/data-products/<name>/` |
-| Build | `implement-source`, `implement-models` | project codebase |
-| Verify | `review-pipeline` | `docs/data-products/<name>/reviews/` |
+|-------|--------|-----------------|
+| Discover | `scope-source` | `docs/sources/<source>/` |
+| Scope | `scope-data-product` | `docs/data-products/<name>/data-product.md` |
+| Build | `implement-source` | project codebase |
+| Build | `implement-data-product` | project codebase + orchestration artifacts |
 
 Each skill works independently. When chained, downstream skills consume upstream artifacts to skip redundant questions.
 
@@ -48,8 +47,7 @@ Each skill works independently. When chained, downstream skills consume upstream
 - **Template-first authoring:** When creating or modifying skills, write the asset template before references, and references before SKILL.md.
 - **Inline references only:** SKILL.md references curated files inline within workflow steps, never in a separate summary section.
 - **Graceful degradation:** Every skill works without upstream artifacts. Missing artifacts mean more questions, not errors.
-- **Build-phase scripts:** `implement-source` and `implement-models` run `validate-upstream.py` before code generation. Exit 2 = blocking error with structured fix suggestion.
-- **Append-only reviews:** `review-pipeline` saves to `reviews/<date>-review.md` and never overwrites.
+- **Build-phase scripts:** `implement-source` and `implement-data-product` run `validate-data-product.py` before code generation. Exit 2 = blocking error with structured fix suggestion.
 
 ## Working with Context Files
 

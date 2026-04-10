@@ -13,26 +13,30 @@ Before starting, establish context and validate inputs:
 
 1. **Which source?** Ask the user for the source name (e.g., `postgres-orders-db`, `stripe-api`). This determines the scorecard path: `docs/sources/<source-name>/evaluation.md`.
 
-2. **Validate upstream artifact.** Run the validation script:
+2. **Validate upstream artifacts.** Run both validation scripts:
 
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/validate-upstream.py <source-name>
    ```
 
-   If validation fails, report what's missing and suggest: "Run `/dos:evaluate-source` to create or complete the scorecard for this source." Do not proceed with code generation until the scorecard passes validation.
+   If validation fails, report what's missing and suggest: "Run `/dos:scope-source` to create or complete the scorecard for this source." Do not proceed until this passes.
 
    **Fallback:** If the script is not found, validate manually:
    - Confirm `docs/sources/<source-name>/evaluation.md` exists
    - Confirm it has valid YAML frontmatter with `name`, `artifact_type`, `version`, `status`
    - Confirm it contains sections for Source Classification, Authentication, and Ingestion Recommendation
 
-3. **Read the scorecard.** Extract: source type, classification, auth mechanism, ingestion approach, dimension scores, and profiling baselines.
+   Then run the data product validation (if a data product name is known):
 
-4. **Optional input detection.** Ask which data product this source is for (if any). If a data product is named, check for:
-   - `docs/data-products/<name>/pipeline-architecture.md` — if present, extract layering strategy and incremental pattern to align generated code.
-   - `docs/data-products/<name>/contract.md` — if present, extract schema for dbt source column definitions.
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/validate-data-product.py <product-name> --require sources
+   ```
 
-   Report each as "available" or "not found — will proceed without enrichment."
+   If this fails, report the missing section and suggest: "Run `/dos:scope-data-product` to populate the Sources section." Do not proceed until both scripts pass.
+
+3. **Read ingestion context.** Extract: source type, classification, auth mechanism, ingestion approach, dimension scores, and profiling baselines from the scorecard. If a data product is named and `docs/data-products/<name>/data-product.md` exists, also read the Sources section (incremental key, freshness requirement) and the Contract section (schema fields) to enrich generated code without asking redundant questions.
+
+4. **Optional enrichment.** Ask which data product this source is for (if not already established). If the data product's `data-product.md` has populated Contract and Quality sections, those provide the same context as the now-deprecated standalone contract and quality config files. Report what's available.
 
 5. **Check for existing code.** Search the project for existing dlt pipeline code and dbt source definitions for this source. If code exists, read it, summarize the current state, and scan for extraction boundary violations per [extraction-boundary-rules.md](references/extraction-boundary-rules.md). Report any violations found (raw-first violations, array fields under merge, cost-blind retry config) before asking what's changing. Propose updates to align existing code with the current scorecard rather than regenerating from scratch. If no code exists, proceed with generation.
 
@@ -117,25 +121,23 @@ Step 2: dbt build              → run only if sources are fresh
 
 If no orchestrator is in place, note this as a TODO for production readiness.
 
-### Step 6: Update Source Evaluation Scorecard
+### Step 6: Update Specification Artifacts
 
-After successful code generation, update the source evaluation scorecard to reflect implementation state:
+After successful code generation:
 
-1. Set `status` field in frontmatter to `implemented` (or update from `draft` to `active`).
-2. Update `last_modified` date.
-3. Add a changelog entry noting:
-   - What was generated (dlt pipeline, dbt source YAML)
-   - File paths of generated code
+1. Update the source evaluation scorecard: set `status` to `implemented`, update `last_modified`, add a changelog entry noting what was generated and file paths.
+2. If a `data-product.md` exists for this product, append a Changelog entry noting:
+   - Skill invoked: `implement-source`
+   - Generated file paths (dlt pipeline, dbt source YAML)
    - Date of implementation
 
 ### Step 7: Next Steps
 
-End with recommendations for downstream skills:
+End with a recommendation for the downstream skill:
 
-1. **`/dos:implement-models`** — Generate dbt models that transform the raw data loaded by this pipeline. The dbt source definitions created here are consumed by staging models.
-2. **`/dos:review-pipeline`** — Audit the pipeline implementation against best practices once models are also in place.
+1. **`/dos:implement-data-product`** — Generate dbt models that transform the raw data loaded by this pipeline. The dbt source definitions created here are consumed by staging models.
 
-Present these options and explain what each downstream skill will use from this implementation.
+Present this option and explain what the downstream skill will use from this implementation.
 
 ## Iteration Bounds
 

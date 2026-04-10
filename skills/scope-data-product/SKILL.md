@@ -1,168 +1,156 @@
 ---
 name: scope-data-product
-description: Define what a data product needs to be, driven by consumption intent. Produces a Data Product Scope Document with consumers, query patterns, freshness requirements, SLA dimensions, quality dimensions, and MoSCoW prioritization.
+description: Populate a data-product.md living document section by section — Overview, Sources, Contract, Quality, Architecture — and maintain its Changelog. Collapses define-contract, assess-quality, design-pipeline, select-model, and the original scope-data-product into one skill.
 ---
 
 # dos:scope-data-product
 
-Define what a data product needs to be, driven by consumption intent. Walk through stakeholder analysis, source inventory, freshness quantification, SLA definition, quality dimension selection, and prioritization — producing a persistent Data Product Scope Document.
+Populate and maintain the `data-product.md` living document. Works section by section through Overview, Sources, Contract, Quality, and Architecture. Handles both first-time scaffolding and targeted re-runs when sections need updating.
 
 ## Preamble
 
-Before starting, establish context:
+**Step 1: Identify the data product.**
+Ask the user for the data product name (e.g., `orders`, `customer-360`). The artifact path is `docs/data-products/<name>/data-product.md`.
 
-1. **Which data product?** Ask the user for a data product name (e.g., `orders`, `customer-360`). This determines the artifact path: `docs/data-products/<name>/scope.md`.
-2. **Check for existing artifact.** If `docs/data-products/<name>/scope.md` exists, read it, summarize the current state, and ask what's changing. Update the existing artifact rather than creating a new one.
-3. **Check for source evaluations.** If source evaluations exist in `docs/sources/`, list them. Ask which sources this data product will consume. Load each referenced scorecard to pre-populate source classifications, profiling baselines, and ingestion recommendations.
+**Step 2: Determine mode.**
 
-If the artifact exists, adjust the workflow: skip sections that haven't changed, focus on what the user wants to update, and bump the version in frontmatter.
+- **New mode** — file does not exist:
+  - Create `docs/data-products/<name>/` directory.
+  - Copy `skills/scope-data-product/assets/data-product.md` to the path.
+  - Substitute `{{name}}` → the data product name and `{{last_modified}}` → today's date in frontmatter.
+  - Confirm scaffold with user. All sections start as pending markers.
+
+- **Re-run mode** — file exists:
+  - Read the file. Build a prioritized agenda:
+    1. Sections that still contain a `<!-- pending:` marker.
+    2. Sections named in recent Changelog "potentially affected" lines.
+  - Present the agenda to the user. Confirm which sections to work through.
+  - The user can add sections or stop at any point.
+
+---
 
 ## Workflow
 
-### Step 1: Load Source Context
+### Step 1: Overview
 
-If source scorecards exist in `docs/sources/`, load each referenced evaluation. Extract:
-- Source type and classification
-- Six-dimension scores (especially freshness, schema stability, data quality)
-- Profiling baselines (completeness, uniqueness, validity)
-- Ingestion recommendations
+References: [interview-questions.md](references/interview-questions.md), [consumption-heuristics.md](references/consumption-heuristics.md), [sla-hierarchy.md](references/sla-hierarchy.md)
 
-A data product may consume multiple sources. The scope document records which sources and datasets are in play.
+Produce:
+- **Consumer table** — consumer, role, use case, decision enabled. Load `docs/sources/` scorecards if available.
+- **Query patterns** — for each consumer, classify using [consumption-heuristics.md](references/consumption-heuristics.md): join-heavy, scan-heavy, entity lookup, or ad-hoc.
+- **SLA commitments in plain language** — timeliness with a specific delivery window, completeness, availability. Use [sla-hierarchy.md](references/sla-hierarchy.md) for SLI/SLO/SLA hierarchy and error budget framing. "Monthly" is not an SLA; "by the 15th of each month" is.
+- **MoSCoW prioritization** — if consumers have competing requirements, apply Must/Should/Could/Won't. Refer to [interview-questions.md](references/interview-questions.md) for the canvas framework.
 
-If no source evaluations exist, proceed — the user will provide source information through conversation.
+Write the section. Immediately after the `## Overview` heading, insert:
+```
+<!-- last-updated: <date> | skill: scope-data-product | version: <version> -->
+```
 
-### Step 2: Consumers and Use Cases
+**Consistency check:** If SLA commitments changed, flag Contract as potentially affected.
 
-Walk through the Data Product Canvas blocks in consumption-first order.
+---
 
-Refer to [interview-questions.md](references/interview-questions.md) for the full canvas framework, stakeholder interview patterns, and consumption-first traversal.
+### Step 2: Sources
 
-Identify:
-- Who consumes this data product (teams, roles, systems)
-- What decisions each consumer makes with the data
-- What happens when the data is wrong or late
+Produce:
+- **Source inventory table** — source name, classification, datasets, ingestion approach, incremental key, freshness requirement. Pull from `docs/sources/<name>/` scorecards where available.
+- **Cross-pipeline dependencies** — list upstream data products this product depends on, with relative links.
+- **Infrastructure references** — use `tool::component.identifier` shorthand (e.g., `dbx::pipeline.ingest-orders`, `airbyte::connection.salesforce-crm`).
 
-Supplement stated requirements with empirical evidence: review actual dashboards, SQL queries, or query logs to understand how data is actually consumed vs. how stakeholders say it is consumed.
+Write the section with metadata comment.
 
-### Step 3: Query Patterns
+**Consistency check:** If sources changed, flag Architecture as potentially affected.
 
-For each consumer, identify the dominant query pattern:
+---
 
-| Pattern | Description |
-|---------|-------------|
-| Join-heavy | Multidimensional analytics across multiple entities |
-| Scan-heavy | Wide columnar queries selecting many attributes |
-| Entity lookup | Point lookups on a specific entity (user, order) |
-| Ad-hoc | Unpredictable exploration patterns |
+### Step 3: Contract
 
-Refer to [consumption-heuristics.md](references/consumption-heuristics.md) for query shape to modeling recommendations.
+References: [odcs-structure.md](references/odcs-structure.md), [enforcement-layers.md](references/enforcement-layers.md), [versioning-patterns.md](references/versioning-patterns.md)
 
-### Step 4: Source Inventory
+Produce:
+- **Schema table** — field, type, nullable, description, constraints. Use [odcs-structure.md](references/odcs-structure.md) for ODCS field structure.
+- **SLA terms** — freshness, completeness, availability as measurable thresholds (not adjectives). Must match the plain-language commitments in Overview.
+- **Consumer commitments** — what downstream consumers can rely on, including backward-compatibility window.
+- **Enforcement notes** — which enforcement layers apply per [enforcement-layers.md](references/enforcement-layers.md). Version bump rules per [versioning-patterns.md](references/versioning-patterns.md).
 
-Document which sources and datasets this data product will consume. For each source:
-- Source name and classification
-- Datasets needed from that source
-- Ingestion approach (from evaluation or determined here)
-- Link to evaluation scorecard if available
+Write the section with metadata comment.
 
-### Step 5: Freshness Requirements
+**Consistency check:** If schema changed or new fields added, flag Quality as potentially affected.
 
-Quantify freshness in specific time units — not adjectives like "real-time" or "near-real-time."
+---
 
-**Key question:** "What business decision changes if the data is 5 minutes old instead of 5 seconds old?"
+### Step 4: Quality
 
-For each dataset, define:
-- Required freshness (e.g., "2 hours", "15 minutes", "daily")
-- Business justification for that freshness
-- Implied ingestion strategy (batch, micro-batch, streaming)
+References: [quality-dimensions.md](references/quality-dimensions.md), [dbt-test-selection.md](references/dbt-test-selection.md), [anomaly-methods.md](references/anomaly-methods.md), [scoring-methods.md](references/scoring-methods.md), [sla-error-budgets.md](references/sla-error-budgets.md), [validation-tiers.md](references/validation-tiers.md), [quality-dimension-selection.md](references/quality-dimension-selection.md)
 
-Refer to [consumption-heuristics.md](references/consumption-heuristics.md) for freshness-to-ingestion mapping.
+Produce:
+- **Quality dimensions table** — dimension, measurement method, rule type, threshold, dbt test, owner. Select dimensions using [quality-dimension-selection.md](references/quality-dimension-selection.md); refer to [quality-dimensions.md](references/quality-dimensions.md) for the six-dimension consensus.
+- **Test mapping** — use [dbt-test-selection.md](references/dbt-test-selection.md) to map each rule type to a specific dbt test.
+- **Anomaly detection** — for high-stakes dimensions, apply [anomaly-methods.md](references/anomaly-methods.md) to select detection approach.
+- **Scoring weights** — use [scoring-methods.md](references/scoring-methods.md) to weight dimensions by consumer dependency.
+- **Alert thresholds** — use [sla-error-budgets.md](references/sla-error-budgets.md) to derive alert triggers from SLA error budgets.
+- **Validation tiers** — assign each rule to a tier per [validation-tiers.md](references/validation-tiers.md): blocking, warning, informational.
 
-### Step 6: SLA Tier Classification
+Write the section with metadata comment.
 
-Classify the data product's SLA tier:
+---
 
-| Tier | Characteristics |
-|------|----------------|
-| **Prototype** | Ad-hoc exploration, no SLA, re-run on failure |
-| **Production-grade** | Formal SLA, error budgets, retry logic, change management |
+### Step 5: Architecture
 
-Pipeline investment should be proportional to consumer dependency on the data.
+References: [layering-strategy.md](references/layering-strategy.md), [consumption-to-architecture.md](references/consumption-to-architecture.md), [incremental-patterns.md](references/incremental-patterns.md), [schema-evolution-patterns.md](references/schema-evolution-patterns.md), [model-decision-matrix.md](references/model-decision-matrix.md), [platform-modeling-guidance.md](references/platform-modeling-guidance.md)
 
-### Step 7: Consumption-Driven Heuristics
+Produce:
+- **Model selection rationale** — Kimball, Data Vault, or OBT. Use [model-decision-matrix.md](references/model-decision-matrix.md) and query patterns from Overview. Apply [platform-modeling-guidance.md](references/platform-modeling-guidance.md) for platform-specific constraints.
+- **Layer description** — staging, intermediate, marts layout per [layering-strategy.md](references/layering-strategy.md). Consumption-to-layer mapping per [consumption-to-architecture.md](references/consumption-to-architecture.md).
+- **Model inventory table** — model name, layer, materialization, description.
+- **Incremental patterns** — select strategy (append, delete+insert, merge, microbatch) per [incremental-patterns.md](references/incremental-patterns.md).
+- **Schema evolution** — note ADD COLUMN / DROP COLUMN / TYPE CHANGE handling per [schema-evolution-patterns.md](references/schema-evolution-patterns.md).
+- **Compute and scheduling declarations** — use `tool::component.identifier` shorthand (e.g., `dbx::job.transform-orders`, `dbx::pipeline.dlt-orders`). Include schedule, cluster config, task dependencies.
+- **Cross-pipeline dependency ordering** — list upstream data products and their expected completion time relative to this product's SLA.
 
-Apply the three consumption dimensions to derive architecture defaults:
+Write the section with metadata comment.
 
-Refer to [consumption-heuristics.md](references/consumption-heuristics.md) for the full decision tables.
+---
 
-- **Query shape** → modeling recommendation (star schema, OBT, entity-centric)
-- **Freshness need** → ingestion strategy (batch, incremental, streaming)
-- **SLA tier** → pipeline investment level
+### After each completed section
 
-### Step 8: Quality Dimensions
+Present the cross-section consistency table entries relevant to the section just completed. Ask: "Do you want to continue to the affected sections now, or note them for a future run?" Record the decision in the Changelog entry regardless.
 
-Select initial quality dimensions and derive thresholds from profiling baselines and consumption tolerances.
+---
 
-Refer to [quality-dimension-selection.md](references/quality-dimension-selection.md) for the six-dimension consensus, selection process, and profiling-to-dimension mapping.
+### Step 6: Version and Changelog
 
-For each selected dimension:
-- Define the threshold (e.g., "> 99% completeness on required fields")
-- Note the profiling baseline if available
-- Document the consumer tolerance that justifies the threshold
+Determine version bump:
+- **MAJOR** — breaking contract change: field removal, type change, SLA tightening. Confirm with user before proceeding.
+- **MINOR** — backward-compatible: new column, threshold recalibration, architecture refactor, new source.
+- **PATCH** — docs, metadata, or comment-only changes.
 
-### Step 9: SLA Dimensions
+Update `version` and `last_modified` in frontmatter.
 
-Define SLA dimensions using the SLI/SLO/SLA hierarchy.
+Append a Changelog entry in this format:
 
-Refer to [sla-hierarchy.md](references/sla-hierarchy.md) for the five SLA dimensions, error budget calculation, delivery window guidance, and tiered guidance.
+```markdown
+### v<version> — <date>
 
-At minimum, define timeliness and completeness SLAs. For each dimension:
-1. Define the SLI (what to measure)
-2. Set the SLO (internal target)
-3. Negotiate the SLA (commitment)
-4. Calculate the error budget
+| Field | Value |
+|-------|-------|
+| version | <version> |
+| date | <date> |
+| skill | scope-data-product |
+| sections updated | <comma-separated list> |
+| change | <one-line summary> |
+| reason | <why this changed> |
+| potentially affected | <downstream sections or skills> |
+```
 
-For timeliness SLAs, cadence alone is insufficient — always ask for the specific delivery window:
+---
 
-> "What specific date or time within the [cadence] period does the consumer need the data? For example: 'by the 15th of each month' or 'by 9am every Monday.'"
+## Cross-Section Consistency Rules
 
-"Monthly" is not a timeliness SLA. "By the 15th of each month" is. The delivery window determines the SLO target and error budget — without it, downstream artifacts will inherit an ambiguous commitment.
-
-### Step 10: MoSCoW Prioritization
-
-If multiple consumers have competing requirements, apply MoSCoW:
-
-Refer to [interview-questions.md](references/interview-questions.md) for MoSCoW framework details.
-
-- **Must have** — without which the data product has no value
-- **Should have** — important, deliverable iteratively
-- **Could have** — nice-to-haves deprioritized under pressure
-- **Won't have** — explicitly descoped with rationale
-
-Unstated "Won't have" items become implicit commitments. Make descoping explicit.
-
-### Step 11: Generate Scope Document
-
-Produce the Data Product Scope Document using the template structure from [scope-document.md](assets/scope-document.md).
-
-Save to `docs/data-products/<name>/scope.md` with:
-- Complete YAML frontmatter (name, artifact_type, version, owner, status, last_modified, sources)
-- All sections populated from the workflow above
-- Explicit "Won't have in v1" section
-- Changelog entry recording the scoping session
-
-If updating an existing artifact:
-- Bump the minor version
-- Update `last_modified`
-- Add a changelog entry describing what changed
-
-### Step 12: Next Steps
-
-End the scope document with a "Next Steps" section recommending downstream skills:
-
-1. **`/dos:select-model`** — Choose a data modeling approach based on query patterns, team size, and platform. Updates the scope document's modeling recommendation section.
-2. **`/dos:define-contract`** — Define a data contract covering schema, quality rules, SLAs, and ownership.
-3. **`/dos:assess-quality`** — Set up quality engineering with dimensions, thresholds, scoring, and validation tooling.
-4. **`/dos:design-pipeline`** — Architecture the data pipeline from source to serving layer.
-
-Present these options to the user and explain what each downstream skill will do with the scope document.
+| Section updated | Potentially affects | Reason |
+|---|---|---|
+| Architecture | Quality | Tests reference layer structure |
+| Architecture | Contract | Enrichment moves may change output schema |
+| Contract | Quality | New or removed fields need quality rules |
+| Sources | Architecture | New or removed sources may not be reflected in the layer model |
+| Overview (SLAs) | Contract | Plain-language SLA changes may not match Contract thresholds |
