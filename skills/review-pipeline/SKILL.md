@@ -1,7 +1,12 @@
 ---
 name: review-pipeline
 description: Audit an existing data pipeline against best practices across observability, validation, CI/CD, SLA compliance, and retry handling. Produces an append-only review checklist with findings, severity ratings, and prioritized recommendations.
+status: deprecated
+deprecated_by: implement-data-product
 ---
+
+> **Deprecated.** This skill has been replaced by `/dos:implement-data-product`.
+> Reference files are preserved for migration. Do not invoke directly.
 
 # dos:review-pipeline
 

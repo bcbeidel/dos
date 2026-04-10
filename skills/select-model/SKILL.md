@@ -1,7 +1,12 @@
 ---
 name: select-model
 description: Guide the user through choosing a data modeling approach (Kimball, Data Vault, OBT) based on team size, source count, compliance needs, query patterns, platform, and change velocity. Updates the scope document's modeling recommendation section.
+status: deprecated
+deprecated_by: scope-data-product
 ---
+
+> **Deprecated.** This skill has been replaced by `/dos:scope-data-product`.
+> Reference files are preserved for migration. Do not invoke directly.
 
 # dos:select-model
 

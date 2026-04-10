@@ -1,7 +1,12 @@
 ---
 name: define-contract
 description: Define or update an ODCS v3.1-aligned data contract covering schema, quality rules, SLAs, ownership, and enforcement strategy. Produces a persistent contract artifact at docs/data-products/<name>/contract.md.
+status: deprecated
+deprecated_by: scope-data-product
 ---
+
+> **Deprecated.** This skill has been replaced by `/dos:scope-data-product`.
+> Reference files are preserved for migration. Do not invoke directly.
 
 # dos:define-contract
 

@@ -1,7 +1,12 @@
 ---
 name: assess-quality
 description: Design a quality assessment configuration for a data product. Produces a Quality Configuration artifact with selected dimensions, scoring method, action thresholds, validation tooling, and anomaly detection approach.
+status: deprecated
+deprecated_by: scope-data-product
 ---
+
+> **Deprecated.** This skill has been replaced by `/dos:scope-data-product`.
+> Reference files are preserved for migration. Do not invoke directly.
 
 # dos:assess-quality
 

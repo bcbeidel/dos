@@ -1,7 +1,12 @@
 ---
 name: implement-models
 description: Generate dbt models, schema YAMLs, tests, and contract enforcement from data product specification artifacts. Validates upstream contract before code generation, detects platform incompatibilities, and updates specification artifacts to reflect implementation state.
+status: deprecated
+deprecated_by: implement-data-product
 ---
+
+> **Deprecated.** This skill has been replaced by `/dos:implement-data-product`.
+> Reference files are preserved for migration. Do not invoke directly.
 
 # dos:implement-models
 
